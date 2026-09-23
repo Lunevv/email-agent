@@ -14,6 +14,7 @@
 //   node check_links.mjs --file letter.html --campaign-utm "email/pru/digest_aug"
 //   node check_links.mjs --file letter.html --utm-source=email --utm-medium=rusender
 //   cat letter.html | node check_links.mjs --timeout 15 --concurrency 3
+//   node check_links.mjs --file letter.html --no-network   (разбор без походов в сеть)
 //
 // UTM бывают на двух уровнях. Если у кампании заполнен объект `utm` (campaigns_get_by_id),
 // передавай его через --campaign-utm: тогда отсутствие меток в ссылках — норма, а вот
@@ -44,6 +45,9 @@ const EXPECT_UTM = {
 // Если они заданы, сервис проставит их сам, и своих меток ссылкам не нужно —
 // наоборот, собственная метка на ссылке способна разойтись с кампанейской.
 // Формат: --campaign-utm "source/medium/campaign", любая часть может быть пустой.
+// --no-network: разобрать ссылки и метки, но не ходить в сеть.
+// Нужен там, где сети нет, и для самопроверки.
+const NO_NETWORK = argv.includes('--no-network');
 const CAMPAIGN_UTM_RAW = opt('campaign-utm', null);
 const CAMPAIGN_UTM = CAMPAIGN_UTM_RAW
   ? (() => {
@@ -271,6 +275,19 @@ async function main() {
     }
 
     const utm = checkUtm(cls.parsed);
+    if (NO_NETWORK) {
+      return {
+        ...base,
+        verdict: utm.problems.length ? 'warn' : 'unchecked',
+        kind: 'http',
+        httpStatus: null,
+        note: 'сеть отключена — доступность ссылки не проверена',
+        utm: utm.utm,
+        utmProblems: utm.checked ? utm.problems : undefined,
+        utmChecked: utm.checked,
+        utmNote: utm.note,
+      };
+    }
     const probeResult = await probe(link.url);
 
     let verdict;
@@ -303,6 +320,7 @@ async function main() {
       timeoutSec: TIMEOUT_MS / 1000,
       concurrency: CONCURRENCY,
       maxRedirects: MAX_HOPS,
+      network: !NO_NETWORK,
       campaignUtm: CAMPAIGN_UTM,
       expectUtm: CAMPAIGN_UTM ? null : EXPECT_UTM,
     },
@@ -310,6 +328,7 @@ async function main() {
       linksTotal: results.length,
       httpChecked: httpLinks.length,
       ok: httpLinks.filter((r) => r.verdict === 'ok').length,
+      unchecked: httpLinks.filter((r) => r.verdict === 'unchecked').length,
       warn: httpLinks.filter((r) => r.verdict === 'warn').length,
       broken: broken.length,
       skipped: results.filter((r) => r.verdict === 'skipped').length,
