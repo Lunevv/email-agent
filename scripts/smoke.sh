@@ -25,12 +25,29 @@ d=json.load(sys.stdin); s=d["summary"]
 sys.exit(0 if s["broken"]==1 and s["unsubscribeInBody"] else 1)' && ok || bad "не поймал относительную ссылку"
 
 step "check_links: конфликт UTM-метки"
-out=$(printf '<html><body><a href="https://example.com/?utm_medium=x">a</a></body></html>' \
+# домен нарочно не из зарезервированных зон: они распознаются как заглушки
+out=$(printf '<html><body><a href="https://shop-rosa.ru/?utm_medium=x">a</a></body></html>' \
       | node skills/rusender-preflight/scripts/check_links.mjs --campaign-utm "email/ru/c" --no-network 2>/dev/null)
 echo "$out" | python3 -c '
 import json,sys
 d=json.load(sys.stdin)
 sys.exit(0 if d["summary"]["warn"]==1 else 1)' && ok || bad "не поймал конфликт метки"
+
+step "check_links: домен-заглушка = битая"
+out=$(printf '<html><body><a href="https://example.com/x">a</a></body></html>' \
+      | node skills/rusender-preflight/scripts/check_links.mjs --no-network 2>/dev/null)
+echo "$out" | python3 -c '
+import json,sys
+d=json.load(sys.stdin)
+sys.exit(0 if d["summary"]["broken"]==1 and d["links"][0]["kind"]=="placeholder" else 1)' && ok || bad "не распознал домен-заглушку"
+
+step "overview: сводка по всем проектам"
+node skills/rusender-agent/scripts/overview.mjs --dir projects --json 2>/dev/null | python3 -c '
+import json,sys
+d=json.load(sys.stdin)
+ps=d.get("projects",[])
+ok = len(ps)>=10 and all("flags" in p for p in ps) and any(p.get("medianOr") for p in ps)
+sys.exit(0 if ok else 1)' && ok || bad "сводка не собирается"
 
 step "структура навыков и фронтматтер"
 python3 scripts/lint.py >/dev/null 2>&1 && ok || bad "см. python3 scripts/lint.py"
