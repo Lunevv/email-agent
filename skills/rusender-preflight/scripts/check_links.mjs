@@ -115,6 +115,10 @@ function classify(link) {
   if (/^(mailto|tel|sms):/i.test(url)) return { kind: 'scheme', note: 'не http(s), проверка не применима' };
   if (/^#/.test(url)) return { kind: 'anchor', note: 'якорь внутри письма' };
 
+  // Зарезервированные домены (RFC 2606/6761): в интернете их не существует
+  // по определению. В письме это забытая заглушка, а не опечатка в имени.
+  const PLACEHOLDER = /\.(example|invalid|test|localhost)$|^(www\.)?example\.(com|net|org)$/i;
+
   let parsed;
   try {
     parsed = new URL(url);
@@ -123,6 +127,10 @@ function classify(link) {
   }
   if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
     return { kind: 'scheme', note: `протокол ${parsed.protocol} не проверяется` };
+  }
+  if (PLACEHOLDER.test(parsed.hostname)) {
+    return { kind: 'placeholder', parsed,
+             note: 'домен-заглушка из стандарта — в интернете его нет и не будет' };
   }
   return { kind: 'http', parsed };
 }
@@ -269,9 +277,13 @@ async function main() {
     const base = { url: link.url, occurrences: link.count };
 
     if (cls.kind !== 'http') {
-      // относительная ссылка в письме никуда не ведёт: это поломка, а не пропуск
-      const verdict = cls.kind === 'invalid' ? 'broken' : 'skipped';
-      return { ...base, verdict, kind: cls.kind, note: cls.note };
+      // относительная ссылка и домен-заглушка в письме никуда не ведут:
+      // это поломка, а не пропуск
+      const verdict = (cls.kind === 'invalid' || cls.kind === 'placeholder') ? 'broken' : 'skipped';
+      const extra = cls.kind === 'placeholder'
+        ? { utm: readUtm(cls.parsed), utmChecked: false }
+        : {};
+      return { ...base, verdict, kind: cls.kind, note: cls.note, ...extra };
     }
 
     const utm = checkUtm(cls.parsed);
