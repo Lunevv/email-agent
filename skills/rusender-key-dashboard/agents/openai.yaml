@@ -1,0 +1,10 @@
+interface:
+  display_name: "RuSender: дашборд ключа"
+  short_description: "Аналитика транзакционных писем по ключу"
+  brand_color: "#102043"
+  default_prompt: "Используй $rusender-key-dashboard, чтобы построить дашборд последних 500 писем по ключу RuSender."
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "rusender"
+      description: "Подключённый аккаунт RuSender"

@@ -1,0 +1,335 @@
+<title>A/B «Летняя коллекция» — отчёт</title>
+<style>
+  :root{
+    --ground:#f7f6f9; --card:#ffffff; --ink:#1b1622; --muted:#6d6579;
+    --line:#e7e3ee; --accent:#d81b8c; --accent-ink:#ffffff;
+    --good:#15935b; --warn:#c9791b; --crit:#d23b3b;
+    --gmail:#ea4335; --yandex:#fc3f1d; --mailru:#1a86e0; --other:#8a8594;
+    --shadow:0 1px 2px rgba(27,22,34,.04),0 12px 32px rgba(27,22,34,.07);
+    --radius:16px;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --ground:#131019; --card:#1d1826; --ink:#f0ecf5; --muted:#a79fb5;
+      --line:#2e2739; --accent:#ff5bb0; --accent-ink:#1b1622;
+      --good:#3fbe83; --warn:#e0a24a; --crit:#f2726f;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 14px 36px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="light"]{
+    --ground:#f7f6f9; --card:#ffffff; --ink:#1b1622; --muted:#6d6579;
+    --line:#e7e3ee; --accent:#d81b8c; --accent-ink:#ffffff;
+    --good:#15935b; --warn:#c9791b; --crit:#d23b3b;
+    --shadow:0 1px 2px rgba(27,22,34,.04),0 12px 32px rgba(27,22,34,.07);
+  }
+  :root[data-theme="dark"]{
+    --ground:#131019; --card:#1d1826; --ink:#f0ecf5; --muted:#a79fb5;
+    --line:#2e2739; --accent:#ff5bb0; --accent-ink:#1b1622;
+    --good:#3fbe83; --warn:#e0a24a; --crit:#f2726f;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 14px 36px rgba(0,0,0,.4);
+  }
+  *{box-sizing:border-box}
+  .wrap{font-family:var(--sans);background:var(--ground);color:var(--ink);min-height:100vh;padding:40px 24px 64px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .inner{max-width:1080px;margin:0 auto}
+  .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700;margin:0 0 10px}
+  h1{font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0 0 14px;font-weight:800;letter-spacing:-.02em;text-wrap:balance}
+  .meta{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{font-size:12.5px;color:var(--muted);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-weight:600}
+  .chip b{color:var(--ink)}
+  section{margin-top:38px}
+  .sec-h{display:flex;align-items:baseline;gap:12px;margin:0 0 16px;flex-wrap:wrap}
+  .sec-h h2{font-size:15px;font-weight:700;letter-spacing:.02em;margin:0;text-transform:uppercase}
+  .sec-h .note{font-size:13px;color:var(--muted)}
+  /* brief */
+  .brief{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:var(--radius);padding:22px 24px;box-shadow:var(--shadow)}
+  .brief p{margin:0 0 12px;font-size:15px;max-width:70ch}
+  .brief p:last-child{margin-bottom:0}
+  .brief .subjects{display:flex;flex-direction:column;gap:8px;margin:14px 0 0}
+  .subj{display:flex;align-items:center;gap:10px;font-size:14px}
+  .subj .n{width:22px;height:22px;border-radius:6px;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;flex:none}
+  .subj.w .n{background:var(--accent);color:var(--accent-ink)}
+  .subj .w-tag{font-size:10px;font-weight:800;letter-spacing:.05em;color:var(--accent-ink);background:var(--accent);padding:2px 7px;border-radius:999px;text-transform:uppercase}
+  /* KPI */
+  .kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+  .kpi .l{font-size:12px;color:var(--muted);font-weight:600;margin:0 0 10px}
+  .kpi .v{font-size:24px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.05;display:flex;align-items:baseline;gap:6px}
+  .kpi .v .u{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.02em}
+  .kpi .v.rate{color:var(--accent)}
+  .kpi .v + .v{margin-top:8px}
+  /* funnel */
+  .funnel{display:flex;flex-direction:column;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}
+  .frow{display:grid;grid-template-columns:96px 1fr 150px;align-items:center;gap:16px}
+  .frow .stage{font-size:13px;font-weight:700;text-align:right;color:var(--muted)}
+  .ftrackwrap{display:flex;justify-content:center}
+  .fbar{height:46px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--accent-ink);font-weight:800;font-size:15px;font-variant-numeric:tabular-nums;background:linear-gradient(90deg,color-mix(in srgb,var(--accent) 78%,#000 0%),var(--accent));box-shadow:var(--shadow);min-width:64px;transition:width .3s}
+  .fmeta{font-size:13px}
+  .fmeta .abs{font-weight:800;font-size:17px;font-variant-numeric:tabular-nums}
+  .fmeta .rate{font-weight:800;font-size:17px;color:var(--accent);font-variant-numeric:tabular-nums;margin-left:2px}
+  .fmeta .cap{color:var(--muted);font-size:11.5px;display:block;margin-top:1px}
+  .fnote{font-size:12px;color:var(--muted);margin:4px 0 0;text-align:center}
+  /* cards */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+  .card h3{margin:0 0 4px;font-size:15px;font-weight:700}
+  .card .cap{margin:0 0 16px;font-size:12.5px;color:var(--muted)}
+  .bars{display:flex;flex-direction:column;gap:14px}
+  .bar-row{display:grid;grid-template-columns:120px 1fr auto;align-items:center;gap:12px}
+  .bar-row .name{font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px}
+  .dot{width:9px;height:9px;border-radius:50%;flex:none}
+  .track{height:22px;background:color-mix(in srgb,var(--ink) 7%,transparent);border-radius:7px;overflow:hidden}
+  .fill{height:100%;border-radius:7px;background:var(--accent);min-width:2px}
+  .val{font-size:14px;font-weight:800;font-variant-numeric:tabular-nums;text-align:right;min-width:52px}
+  .win{background:color-mix(in srgb,var(--accent) 12%,transparent);border-radius:8px;padding:6px 8px;margin:-6px -8px}
+  .tag-win{font-size:10px;font-weight:800;letter-spacing:.06em;color:var(--accent-ink);background:var(--accent);padding:2px 7px;border-radius:999px;text-transform:uppercase}
+  /* matrix */
+  .matrix-scroll{overflow-x:auto}
+  table.matrix{border-collapse:separate;border-spacing:6px;width:100%;min-width:640px}
+  table.matrix th{font-size:12px;font-weight:700;color:var(--muted);padding:4px 8px;text-align:center;vertical-align:bottom}
+  table.matrix th.rowh{text-align:left;min-width:96px}
+  table.matrix th .grp{display:block;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);margin-bottom:3px}
+  table.matrix th .sz{display:block;font-size:10px;font-weight:600;color:var(--muted);margin-top:2px}
+  table.matrix td{padding:0;text-align:center}
+  .cell{border-radius:10px;padding:14px 8px;font-weight:800;font-size:17px;font-variant-numeric:tabular-nums;position:relative}
+  .best{outline:2px solid var(--accent);outline-offset:-2px}
+  .star{position:absolute;top:4px;right:6px;font-size:10px;color:var(--accent-ink)}
+  .coldiv{width:2px;background:var(--line);padding:0}
+  .prov{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700}
+  .dcol{color:var(--accent-ink)}
+  /* insights */
+  .insights{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .ins{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:12px;padding:16px 18px;box-shadow:var(--shadow)}
+  .ins h4{margin:0 0 6px;font-size:14px;font-weight:700}
+  .ins p{margin:0;font-size:13.5px;color:var(--muted)}
+  .ins .big{color:var(--ink);font-weight:700}
+  footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+  footer b{color:var(--ink)}
+  @media (max-width:860px){
+    .kpis{grid-template-columns:repeat(3,1fr)}
+    .cols,.insights{grid-template-columns:1fr}
+  }
+  @media (max-width:520px){
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .frow{grid-template-columns:70px 1fr;grid-template-areas:"s b" "s m"}
+    .frow .stage{grid-area:s}.ftrackwrap{grid-area:b}.fmeta{grid-area:m;padding-left:0}
+    .bar-row{grid-template-columns:96px 1fr auto}
+  }
+</style>
+
+<div class="wrap">
+<div class="inner">
+
+  <header>
+    <p class="eyebrow">RuSender · Отчёт по A/B-тесту</p>
+    <h1>«Летняя коллекция — вся база»</h1>
+    <div class="meta">
+      <span class="chip">ID <b>107460</b></span>
+      <span class="chip">Тип <b>A/B по теме</b></span>
+      <span class="chip">Отправлено <b>01.07.2026</b></span>
+      <span class="chip">База <b>Основная база</b></span>
+    </div>
+  </header>
+
+  <!-- Задача -->
+  <section>
+    <div class="sec-h"><h2>Задача</h2></div>
+    <div class="brief">
+      <p><b>1 июля 2026</b> по базе «Основная база» (13,5 тыс. адресов) запущен <b>A/B-тест темы письма</b> рассылки о летней коллекции. Проверяли, какой из трёх заголовков лучше открывают.</p>
+      <p>Механика: <b>50%</b> базы поделены поровну между тремя вариантами темы (тестовые группы), система выбрала победителя по открываемости и разослала его оставшимся <b>50%</b> (досыл).</p>
+      <div class="subjects">
+        <div class="subj"><span class="n">1</span><span>«Обновили каталог»</span></div>
+        <div class="subj"><span class="n">2</span><span>«🌿 Восемь новинок — и все для дачи»</span></div>
+        <div class="subj w"><span class="n">3</span><span>«Летняя коллекция: террасы, свет и текстиль»</span><span class="w-tag">победитель</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KPI -->
+  <section>
+    <div class="sec-h"><h2>Итог по всей кампании</h2><span class="note">тест + досыл победителем · 13 458 доставлено</span></div>
+    <div class="kpis">
+      <div class="kpi"><p class="l">Отправлено</p><div class="v">13 564<span class="u">шт.</span></div></div>
+      <div class="kpi"><p class="l">Доставлено</p><div class="v rate">99,2%</div><div class="v">13 458<span class="u">шт.</span></div></div>
+      <div class="kpi"><p class="l">Открытия</p><div class="v rate">12,9%<span class="u">OR</span></div><div class="v">1 742<span class="u">шт.</span></div></div>
+      <div class="kpi"><p class="l">Клики</p><div class="v rate">2,2%<span class="u">CTOR</span></div><div class="v">38<span class="u">шт.</span></div></div>
+      <div class="kpi"><p class="l">Отписки</p><div class="v rate">0,30%</div><div class="v">41<span class="u">шт.</span></div></div>
+      <div class="kpi"><p class="l">Жалобы</p><div class="v rate">0,00%</div><div class="v">0<span class="u">шт.</span></div></div>
+    </div>
+  </section>
+
+  <!-- Funnel -->
+  <section>
+    <div class="sec-h"><h2>Воронка</h2><span class="note">от отправки до клика</span></div>
+    <div class="funnel">
+      <div class="frow">
+        <span class="stage">Отправлено</span>
+        <span class="ftrackwrap"><span class="fbar" style="width:100%">13 564</span></span>
+        <span class="fmeta"><span class="rate">100%</span><span class="cap">базовый объём</span></span>
+      </div>
+      <div class="frow">
+        <span class="stage">Доставлено</span>
+        <span class="ftrackwrap"><span class="fbar" style="width:88%">13 458</span></span>
+        <span class="fmeta"><span class="rate">99,2%</span><span class="cap">от отправленных</span></span>
+      </div>
+      <div class="frow">
+        <span class="stage">Открыто</span>
+        <span class="ftrackwrap"><span class="fbar" style="width:34%">1 742</span></span>
+        <span class="fmeta"><span class="rate">12,9%</span><span class="cap">от доставленных (OR)</span></span>
+      </div>
+      <div class="frow">
+        <span class="stage">Клик</span>
+        <span class="ftrackwrap"><span class="fbar" style="width:12%">38</span></span>
+        <span class="fmeta"><span class="rate">2,2%</span><span class="cap">от открытий (CTOR)</span></span>
+      </div>
+      <p class="fnote">Ширина отражает сужение воронки; проценты — конверсия каждого шага.</p>
+    </div>
+  </section>
+
+  <!-- variants + providers -->
+  <section>
+    <div class="cols">
+      <div class="card">
+        <h3>Варианты темы (тестовые группы)</h3>
+        <p class="cap">Открываемость на равных группах ~2 246 адресов</p>
+        <div class="bars">
+          <div class="bar-row win">
+            <span class="name"><span class="dot" style="background:var(--accent)"></span>…террасы, свет и текстиль</span>
+            <div class="track"><div class="fill" style="width:100%"></div></div>
+            <span class="val">13,4%</span>
+          </div>
+          <div class="bar-row">
+            <span class="name"><span class="dot" style="background:color-mix(in srgb,var(--accent) 55%,var(--muted))"></span>Обновили каталог</span>
+            <div class="track"><div class="fill" style="width:92.5%;background:color-mix(in srgb,var(--accent) 60%,var(--muted))"></div></div>
+            <span class="val">12,4%</span>
+          </div>
+          <div class="bar-row">
+            <span class="name"><span class="dot" style="background:var(--muted)"></span>🌿 Восемь новинок</span>
+            <div class="track"><div class="fill" style="width:86%;background:var(--muted)"></div></div>
+            <span class="val">11,5%</span>
+          </div>
+        </div>
+        <div style="margin-top:16px;display:flex;align-items:center;gap:10px">
+          <span class="tag-win">Победитель</span>
+          <span style="font-size:13px;color:var(--muted)">CTOR 2,3% · 7 кликов</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>По почтовым системам</h3>
+        <p class="cap">Открываемость досыла победителя (6 786 адресов)</p>
+        <div class="bars">
+          <div class="bar-row">
+            <span class="name"><span class="dot" style="background:var(--gmail)"></span>Gmail</span>
+            <div class="track"><div class="fill" style="width:100%;background:var(--gmail)"></div></div>
+            <span class="val">20,6%</span>
+          </div>
+          <div class="bar-row">
+            <span class="name"><span class="dot" style="background:var(--other)"></span>Прочие</span>
+            <div class="track"><div class="fill" style="width:89%;background:var(--other)"></div></div>
+            <span class="val">18,4%</span>
+          </div>
+          <div class="bar-row">
+            <span class="name"><span class="dot" style="background:var(--mailru)"></span>Mail.ru</span>
+            <div class="track"><div class="fill" style="width:37%;background:var(--mailru)"></div></div>
+            <span class="val">7,7%</span>
+          </div>
+          <div class="bar-row">
+            <span class="name"><span class="dot" style="background:var(--yandex)"></span>Yandex</span>
+            <div class="track"><div class="fill" style="width:30%;background:var(--yandex)"></div></div>
+            <span class="val">6,1%</span>
+          </div>
+        </div>
+        <p style="margin:16px 0 0;font-size:13px;color:var(--muted)">Разрыв <b style="color:var(--ink)">3,4×</b> между Gmail и Yandex по открываемости.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- matrix -->
+  <section>
+    <div class="sec-h"><h2>Матрица: тема × почтовик</h2><span class="note">открываемость (OR); ★ — лучшая тема для провайдера среди тестовых групп</span></div>
+    <div class="card">
+      <div class="matrix-scroll">
+        <table class="matrix">
+          <thead>
+            <tr>
+              <th class="rowh"></th>
+              <th><span class="grp">A/B тест</span>Обновили каталог<span class="sz">~2 246</span></th>
+              <th><span class="grp">A/B тест</span>🌿 Восемь новинок<span class="sz">~2 246</span></th>
+              <th><span class="grp">A/B тест</span>…террасы, свет и текстиль<span class="sz">~2 246</span></th>
+              <th class="coldiv"></th>
+              <th><span class="grp">Досыл</span>Победитель<span class="sz">6 786</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th class="rowh"><span class="prov"><span class="dot" style="background:var(--gmail)"></span>Gmail</span></th>
+              <td><div class="cell best" style="background:color-mix(in srgb,var(--accent) 97%,var(--card));color:var(--accent-ink)"><span class="star">★</span>21,3%</div></td>
+              <td><div class="cell" style="background:color-mix(in srgb,var(--accent) 77%,var(--card));color:var(--accent-ink)">17,0%</div></td>
+              <td><div class="cell" style="background:color-mix(in srgb,var(--accent) 89%,var(--card));color:var(--accent-ink)">19,6%</div></td>
+              <td class="coldiv"></td>
+              <td><div class="cell dcol" style="background:color-mix(in srgb,var(--accent) 94%,var(--card));color:var(--accent-ink)">20,6%</div></td>
+            </tr>
+            <tr>
+              <th class="rowh"><span class="prov"><span class="dot" style="background:var(--yandex)"></span>Yandex</span></th>
+              <td><div class="cell" style="background:color-mix(in srgb,var(--accent) 19%,var(--card))">4,2%</div></td>
+              <td><div class="cell best" style="background:color-mix(in srgb,var(--accent) 26%,var(--card))"><span class="star" style="color:var(--accent)">★</span>5,8%</div></td>
+              <td><div class="cell" style="background:color-mix(in srgb,var(--accent) 22%,var(--card))">4,8%</div></td>
+              <td class="coldiv"></td>
+              <td><div class="cell" style="background:color-mix(in srgb,var(--accent) 28%,var(--card))">6,1%</div></td>
+            </tr>
+            <tr>
+              <th class="rowh"><span class="prov"><span class="dot" style="background:var(--mailru)"></span>Mail.ru</span></th>
+              <td><div class="cell" style="background:color-mix(in srgb,var(--accent) 33%,var(--card))">7,3%</div></td>
+              <td><div class="cell" style="background:color-mix(in srgb,var(--accent) 32%,var(--card))">7,1%</div></td>
+              <td><div class="cell best" style="background:color-mix(in srgb,var(--accent) 36%,var(--card))"><span class="star" style="color:var(--accent)">★</span>8,0%</div></td>
+              <td class="coldiv"></td>
+              <td><div class="cell" style="background:color-mix(in srgb,var(--accent) 35%,var(--card))">7,7%</div></td>
+            </tr>
+            <tr>
+              <th class="rowh"><span class="prov"><span class="dot" style="background:var(--other)"></span>Прочие</span></th>
+              <td><div class="cell" style="background:color-mix(in srgb,var(--accent) 78%,var(--card));color:var(--accent-ink)">17,1%</div></td>
+              <td><div class="cell" style="background:color-mix(in srgb,var(--accent) 73%,var(--card));color:var(--accent-ink)">16,1%</div></td>
+              <td><div class="cell best" style="background:color-mix(in srgb,var(--accent) 100%,var(--card));color:var(--accent-ink)"><span class="star">★</span>22,0%</div></td>
+              <td class="coldiv"></td>
+              <td><div class="cell dcol" style="background:color-mix(in srgb,var(--accent) 84%,var(--card));color:var(--accent-ink)">18,4%</div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin:14px 2px 0;font-size:13px;color:var(--muted)">Первые три столбца — <b style="color:var(--ink)">A/B-тест</b> (равные группы ~2 246, темы сравнимы напрямую). Последний — <b style="color:var(--ink)">досыл победителя</b> на большую аудиторию (6 786), одна тема, для контроля. Общий победитель выигрывает не у всех: <b style="color:var(--ink)">Gmail</b> лучше открывает «Обновили каталог», <b style="color:var(--ink)">Yandex</b> — эмодзи-тему.</p>
+    </div>
+  </section>
+
+  <!-- link clicks -->
+  <section>
+    <div class="sec-h"><h2>Куда кликали</h2><span class="note">все части кампании · 38 кликов</span></div>
+    <div class="card">
+      <div class="bars">
+        <div class="bar-row"><span class="name">Каталог распродажи</span><div class="track"><div class="fill" style="width:100%"></div></div><span class="val">18</span></div>
+        <div class="bar-row"><span class="name">Подборка для дачи</span><div class="track"><div class="fill" style="width:44%"></div></div><span class="val">8</span></div>
+        <div class="bar-row"><span class="name">Главная</span><div class="track"><div class="fill" style="width:33%"></div></div><span class="val">6</span></div>
+        <div class="bar-row"><span class="name">Текстиль</span><div class="track"><div class="fill" style="width:17%"></div></div><span class="val">3</span></div>
+        <div class="bar-row"><span class="name">Освещение</span><div class="track"><div class="fill" style="width:17%"></div></div><span class="val">3</span></div>
+      </div>
+      <p style="margin:16px 0 0;font-size:13px;color:var(--muted)"><b style="color:var(--ink)">47%</b> кликов (18 из 38) — на каталог распродажи. Учтены все части: 3 тестовые группы + досыл.</p>
+    </div>
+  </section>
+
+  <!-- insights -->
+  <section>
+    <div class="sec-h"><h2>Ключевые выводы</h2></div>
+    <div class="insights">
+      <div class="ins"><h4>Побеждает конкретика</h4><p>Описательная тема <span class="big">«террасы, свет и текстиль»</span> обошла и короткую, и эмодзи-версию. Перечисление категорий в теме работает лучше игривости.</p></div>
+      <div class="ins"><h4>Почтовик решает</h4><p><span class="big">Gmail открывает в 3,4× чаще Yandex</span> (20,6% против 6,1%). Yandex и Mail.ru — «спящие»: письмо доходит, но почти не открывается.</p></div>
+      <div class="ins"><h4>Единый победитель ≠ оптимум</h4><p>Под Gmail лучше зашла бы «Обновили каталог», под Yandex — эмодзи-тема. Единая тема на всех недобрала открытий на этих сегментах.</p></div>
+      <div class="ins"><h4>Клики — про продукт</h4><p>Почти половина всех переходов (<span class="big">18 из 38</span>) — на каталог. В следующих письмах ссылку на каталог стоит делать первой заметной кнопкой.</p></div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Источник: RuSender API (кампания 107460, варианты 107555/107556/107557). Метрики: <b>OR</b> = открытия / доставленные, <b>CTOR</b> = клики / открытия. Матрица: столбцы «A/B тест» — тестовые группы (~2 246 на вариант), столбец «Досыл» — рассылка темы-победителя на оставшиеся 6 786. Малые ячейки Yandex/Mail.ru — результат директивный, не статзначимый. Сформировано 04.08.2026.</p>
+  </footer>
+
+</div>
+</div>

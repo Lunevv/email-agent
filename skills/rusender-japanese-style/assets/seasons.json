@@ -1,0 +1,142 @@
+{
+ "_note": "Сезоны по месяцам для северного полушария; в южном сдвиг на 6 месяцев. Сезонное слово (киго) и цвет подобраны по японскому сезонному календарю. ink и muted общие для всех палитр. motto — деловой девиз сезона для шапки письма, фиксированный.",
+ "ink": "#3b3633",
+ "muted": "#857e78",
+ "card": "#ffffff",
+ "months_north": {
+  "1": "winter_mid",
+  "2": "winter_late",
+  "3": "spring_early",
+  "4": "spring_mid",
+  "5": "spring_late",
+  "6": "summer_early",
+  "7": "summer_mid",
+  "8": "summer_late",
+  "9": "autumn_early",
+  "10": "autumn_mid",
+  "11": "autumn_late",
+  "12": "winter_early"
+ },
+ "seasons": {
+  "spring_early": {
+   "jp": "梅",
+   "reading": "умэ",
+   "kigo": "цветущая слива",
+   "label": "ранняя весна",
+   "bg": "#f7eff1",
+   "line": "#ead6dc",
+   "accent": "#9d566e",
+   "motto": "первые договорённости"
+  },
+  "spring_mid": {
+   "jp": "桜",
+   "reading": "сакура",
+   "kigo": "вишня в цвету",
+   "label": "весна",
+   "bg": "#fcf0f3",
+   "line": "#f0d8e0",
+   "accent": "#ab506b",
+   "motto": "планы расцветают"
+  },
+  "spring_late": {
+   "jp": "藤",
+   "reading": "фудзи",
+   "kigo": "глициния",
+   "label": "поздняя весна",
+   "bg": "#f3f0f8",
+   "line": "#ddd5ea",
+   "accent": "#7761a1",
+   "motto": "связи крепнут"
+  },
+  "summer_early": {
+   "jp": "紫陽花",
+   "reading": "адзисай",
+   "kigo": "гортензия",
+   "label": "начало лета",
+   "bg": "#eff1f8",
+   "line": "#d8dcef",
+   "accent": "#5f68a6",
+   "motto": "время смелых решений"
+  },
+  "summer_mid": {
+   "jp": "風鈴",
+   "reading": "фурин",
+   "kigo": "ветряной колокольчик",
+   "label": "середина лета",
+   "bg": "#eaf5f3",
+   "line": "#cfe6e2",
+   "accent": "#3a786f",
+   "motto": "дела идут легко"
+  },
+  "summer_late": {
+   "jp": "向日葵",
+   "reading": "химавари",
+   "kigo": "подсолнух",
+   "label": "конец лета",
+   "bg": "#fbf6e6",
+   "line": "#efe2bb",
+   "accent": "#8c6818",
+   "motto": "курс на рост"
+  },
+  "autumn_early": {
+   "jp": "萩",
+   "reading": "хаги",
+   "kigo": "леспедеца",
+   "label": "ранняя осень",
+   "bg": "#f5eff4",
+   "line": "#e3d5e0",
+   "accent": "#8b5d80",
+   "motto": "договоры приносят плоды"
+  },
+  "autumn_mid": {
+   "jp": "紅葉",
+   "reading": "момидзи",
+   "kigo": "красные клёны",
+   "label": "осень",
+   "bg": "#fbf1ea",
+   "line": "#efd8c8",
+   "accent": "#a65932",
+   "motto": "время собирать урожай"
+  },
+  "autumn_late": {
+   "jp": "落葉",
+   "reading": "отиба",
+   "kigo": "опавшие листья",
+   "label": "поздняя осень",
+   "bg": "#f5efe9",
+   "line": "#e5d7cb",
+   "accent": "#8a5c40",
+   "motto": "порядок в делах"
+  },
+  "winter_early": {
+   "jp": "初雪",
+   "reading": "хацуюки",
+   "kigo": "первый снег",
+   "label": "начало зимы",
+   "bg": "#f0f3f6",
+   "line": "#d9e0e8",
+   "accent": "#5d6f84",
+   "motto": "итоги года"
+  },
+  "winter_mid": {
+   "jp": "水仙",
+   "reading": "суйсэн",
+   "kigo": "нарцисс",
+   "label": "середина зимы",
+   "bg": "#f7f4e9",
+   "line": "#e7e0c6",
+   "accent": "#7d6e2b",
+   "motto": "новые планы"
+  },
+  "winter_late": {
+   "jp": "寒椿",
+   "reading": "кантубаки",
+   "kigo": "зимняя камелия",
+   "label": "конец зимы",
+   "bg": "#f7eeef",
+   "line": "#e8d5d8",
+   "accent": "#9c4553",
+   "motto": "всё готово к росту"
+  }
+ }
+}

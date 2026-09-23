@@ -1,0 +1,479 @@
+<title>Аккаунт RuSender — общий обзор</title>
+<style>
+  :root{
+    --ground:#f6f8fb; --card:#ffffff; --ink:#17202e; --muted:#5f6b7a;
+    --line:#e3e8f0; --accent:#2563eb; --accent-ink:#ffffff;
+    --good:#15935b; --warn:#c9791b; --crit:#d23b3b;
+    --gmail:#4285f4; --yandex:#7b5cd6; --mailru:#1a86e0; --other:#8a8594;
+    --accent2:#14b8a6;
+    --shadow:0 1px 2px rgba(15,23,42,.05),0 12px 32px rgba(15,23,42,.07);
+    --radius:16px;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --ground:#0f1520; --card:#1a2130; --ink:#eef2f8; --muted:#9aa7ba;
+    --line:#273143; --accent:#6ea3f2; --accent-ink:#0f1520;
+    --good:#3fbe83; --warn:#e0a24a; --crit:#f2726f;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 14px 36px rgba(0,0,0,.4);
+  }}
+  :root[data-theme="light"]{
+    --ground:#f6f8fb; --card:#ffffff; --ink:#17202e; --muted:#5f6b7a;
+    --line:#e3e8f0; --accent:#2563eb; --accent-ink:#ffffff;
+    --good:#15935b; --warn:#c9791b; --crit:#d23b3b;
+    --shadow:0 1px 2px rgba(15,23,42,.05),0 12px 32px rgba(15,23,42,.07);
+  }
+  :root[data-theme="dark"]{
+    --ground:#0f1520; --card:#1a2130; --ink:#eef2f8; --muted:#9aa7ba;
+    --line:#273143; --accent:#6ea3f2; --accent-ink:#0f1520;
+    --good:#3fbe83; --warn:#e0a24a; --crit:#f2726f;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 14px 36px rgba(0,0,0,.4);
+  }
+  *{box-sizing:border-box}
+  .wrap{font-family:var(--sans);background:var(--ground);color:var(--ink);min-height:100vh;padding:40px 24px 64px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .inner{max-width:1080px;margin:0 auto}
+  .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700;margin:0 0 10px}
+  h1{font-size:clamp(24px,3.6vw,34px);line-height:1.12;margin:0 0 14px;font-weight:800;letter-spacing:-.02em;text-wrap:balance}
+  /* campaign info card — email preview + facts row */
+  .infocard{margin-top:6px;padding:22px 24px}
+  .mailprev{display:flex;gap:14px;align-items:flex-start}
+  .mp-ava{width:46px;height:46px;border-radius:13px;background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 55%,#7b5cd6));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:19px;flex:none}
+  .mp-body{flex:1;min-width:0}
+  .mp-line1{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;font-size:13px}
+  .mp-from{font-weight:700}
+  .mp-email{color:var(--muted)}
+  .mp-date{margin-left:auto;color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+  .mp-subj{font-size:17.5px;font-weight:800;margin:4px 0 2px;line-height:1.3;text-wrap:balance}
+  .mp-pre{font-size:13.5px;color:var(--muted)}
+  .ic-facts{display:grid;grid-template-columns:repeat(4,1fr);margin-top:18px;border-top:1px solid var(--line);padding-top:16px}
+  .fact{padding:0 18px;border-left:1px solid var(--line);min-width:0}
+  .fact:first-child{border-left:none;padding-left:0}
+  .ic-l{display:block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:5px}
+  .ic-v{display:block;font-size:14.5px;font-weight:700;line-height:1.3;font-variant-numeric:tabular-nums;overflow-wrap:break-word}
+  .ic-sub{display:block;font-size:12px;color:var(--muted);margin-top:2px;font-weight:600;font-variant-numeric:tabular-nums}
+  @media (max-width:760px){
+    .ic-facts{grid-template-columns:1fr 1fr;gap:14px 0}
+    .fact:nth-child(odd){border-left:none;padding-left:0}
+    .mp-date{margin-left:0;width:100%}
+  }
+  section{margin-top:36px}
+  .sec-h{display:flex;align-items:baseline;gap:12px;margin:0 0 16px;flex-wrap:wrap}
+  .sec-h h2{font-size:15px;font-weight:700;letter-spacing:.02em;margin:0;text-transform:uppercase}
+  .sec-h .note{font-size:13px;color:var(--muted)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+  .brief{border-left:3px solid var(--accent)}
+  .brief p{margin:0 0 10px;font-size:15px;max-width:72ch}.brief p:last-child{margin:0}
+  /* KPI */
+  .kpis{display:grid;grid-template-columns:repeat(7,1fr);gap:10px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:var(--shadow)}
+  .kpi .l{font-size:11.5px;color:var(--muted);font-weight:600;margin:0 0 9px}
+  .kpi .v{font-size:22px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.05;display:flex;align-items:baseline;gap:5px}
+  .kpi .v .u{font-size:10.5px;font-weight:700;color:var(--muted)}
+  .kpi .v.rate{color:var(--accent)} .kpi .v.pos{color:var(--good)}
+  .kpi .v + .v{margin-top:7px}
+  /* funnel */
+  .funnel{display:flex;flex-direction:column;gap:10px}
+  .frow{display:grid;grid-template-columns:92px 1fr 148px;align-items:center;gap:16px}
+  .frow .stage{font-size:13px;font-weight:700;text-align:right;color:var(--muted)}
+  .ftrackwrap{display:flex;justify-content:center}
+  .fbar{height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--accent-ink);font-weight:800;font-size:15px;font-variant-numeric:tabular-nums;background:linear-gradient(90deg,color-mix(in srgb,var(--accent) 72%,#000 0%),var(--accent));min-width:60px}
+  .fmeta .rate{font-weight:800;font-size:17px;color:var(--accent);font-variant-numeric:tabular-nums}
+  .fmeta .cap{color:var(--muted);font-size:11.5px;display:block;margin-top:1px}
+  /* timeline columns */
+  .tl{display:flex;align-items:flex-end;gap:10px;height:170px;padding-top:8px}
+  .tlcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+  .tlbar{width:100%;max-width:46px;background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 55%,var(--card)));border-radius:6px 6px 0 0;min-height:3px}
+  .tlval{font-size:11px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+  .tld{font-size:10.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .tlnote{font-size:12px;color:var(--muted);margin:12px 0 0}
+  .linechart{width:100%;height:auto;display:block;overflow:visible}
+  .tl-legend{display:flex;gap:16px;align-items:center;margin:0 0 12px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+  .tl-legend .lg{display:flex;align-items:center;gap:6px;font-weight:600;color:var(--ink)}
+  .tl-legend .lg i{width:16px;height:3px;border-radius:2px;display:inline-block}
+  .tl-legend .lg-note{margin-left:auto;font-weight:400}
+  .verdict-banner{display:flex;gap:10px;align-items:center;background:color-mix(in srgb,var(--good) 12%,transparent);border:1px solid color-mix(in srgb,var(--good) 38%,var(--line));color:var(--good);font-weight:700;font-size:14.5px;border-radius:12px;padding:14px 16px;margin:0 0 16px}
+  .verdict-banner .ic{font-size:17px;line-height:1}
+  /* base section */
+  .base-grid{display:grid;grid-template-columns:1fr 1.5fr;gap:0}
+  .base-left{display:flex;flex-direction:column;gap:20px;border-right:1px solid var(--line);padding-right:26px}
+  .base-right{padding-left:26px}
+  .lchips{display:flex;flex-direction:column;gap:8px;min-width:0}
+  .lchip{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:7px 13px;border:1px solid var(--line);border-radius:9px;font-weight:600;font-size:13.5px;background:color-mix(in srgb,var(--accent) 6%,transparent)}
+  .seg-note{font-size:14px;font-weight:700}
+  .pbrows{display:flex;flex-direction:column;gap:13px}
+  .pbrow{display:grid;grid-template-columns:104px 1fr 56px 66px;align-items:center;gap:12px}
+  .pbrow .nm{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;min-width:0}
+  .pbrow .pct{font-size:14.5px;font-weight:800;text-align:right;font-variant-numeric:tabular-nums}
+  .pbrow .pabs{font-size:12.5px;color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+  .logo-s{width:18px;height:18px;border-radius:5px;object-fit:contain;flex:none}
+  @media (max-width:760px){
+    .base-grid{grid-template-columns:1fr}
+    .base-left{border-right:none;border-bottom:1px solid var(--line);padding-right:0;padding-bottom:18px}
+    .base-right{padding-left:0;padding-top:18px}
+    .pbrow{grid-template-columns:96px 1fr 50px 60px}
+  }
+  /* provider table */
+  .ptbl{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+  .ptbl th{font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);font-weight:700;text-align:right;padding:0 10px 10px}
+  .ptbl th:first-child{text-align:left}
+  .ptbl td{padding:11px 10px;border-top:1px solid var(--line);font-size:14px;font-weight:700;text-align:right}
+  .ptbl td:first-child{text-align:left;font-weight:600}
+  .prov{display:flex;align-items:center;gap:9px}
+  .logo{width:20px;height:20px;border-radius:5px;flex:none;object-fit:contain}
+  .ptbl .or{color:var(--accent);font-weight:800}
+  .mini{display:inline-block;height:6px;border-radius:3px;background:var(--accent);vertical-align:middle;margin-left:8px}
+  /* two-col */
+  .cols{display:grid;grid-template-columns:1.2fr 1fr;gap:18px}
+  .card h3{margin:0 0 4px;font-size:15px;font-weight:700}.card .cap{margin:0 0 16px;font-size:12.5px;color:var(--muted)}
+  /* .bars is the real grid; .bar-row is display:contents so its children
+     (name/track/val) share ONE set of column tracks across all rows —
+     this is what keeps every bar's left edge aligned regardless of label length. */
+  .bars{display:grid;grid-template-columns:max-content 1fr auto;column-gap:12px;row-gap:13px;align-items:center}
+  .bar-row{display:contents}
+  .bar-row .name{font-size:13px;font-weight:600;white-space:nowrap}
+  .bar-row .track{min-width:0}
+  .track{height:20px;background:color-mix(in srgb,var(--ink) 7%,transparent);border-radius:6px;overflow:hidden}
+  .fill{height:100%;border-radius:6px;background:var(--accent);min-width:2px}
+  .val{font-size:14px;font-weight:800;font-variant-numeric:tabular-nums;text-align:right;min-width:40px}
+  /* risk */
+  .risk{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .rtile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow);border-top:3px solid var(--good)}
+  .rtile.ok{border-top-color:var(--good)} .rtile.warn{border-top-color:var(--warn)}
+  .rtile .rl{font-size:12px;color:var(--muted);font-weight:600;margin:0 0 8px}
+  .rtile .rv{font-size:24px;font-weight:800;font-variant-numeric:tabular-nums}
+  .rtile .rr{font-size:12px;color:var(--muted);margin-top:3px;font-variant-numeric:tabular-nums}
+  .rtile .verdict{font-size:12px;font-weight:700;margin-top:8px}
+  .verdict.ok{color:var(--good)} .verdict.warn{color:var(--warn)}
+  /* insights */
+  .insights{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .ins{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:12px;padding:16px 18px;box-shadow:var(--shadow)}
+  .ins h4{margin:0 0 6px;font-size:14px;font-weight:700}.ins p{margin:0;font-size:13.5px;color:var(--muted)}.ins .big{color:var(--ink);font-weight:700}
+  /* email render + click heatmap */
+  .hm-grid{display:grid;grid-template-columns:minmax(0,400px) 1fr;gap:28px;align-items:start}
+  .mailrender{background:#f0f1f7;border:1px solid var(--line);border-radius:14px;padding:18px}
+  .mr{background:#fff;border-radius:16px;font-family:arial,"helvetica neue",helvetica,sans-serif;color:#333;font-size:12px;line-height:1.45}
+  .mr-top{border-radius:16px 16px 0 0;overflow:hidden}
+  .mr img{display:block;width:100%;height:auto}
+  .mr-pad{padding:16px 18px}
+  .mr-logo{background:#fff;padding:12px 18px;text-align:center;font-weight:800;color:#191942;font-size:15px;letter-spacing:-.01em}
+  .mr-hero{height:96px;background:linear-gradient(135deg,#dfe3fb,#c9cffa);display:flex;align-items:center;justify-content:center;color:#7b83c4;font-size:11px;font-weight:700}
+  .mr-h{font-size:14px;font-weight:800;color:#191942;margin:0 0 8px;line-height:1.3}
+  .mr-p{margin:0 0 8px;color:#333}
+  .mr-code{background:#f8f8fc;border-radius:9px;padding:14px;text-align:center;font-size:20px;font-weight:800;color:#333;letter-spacing:.02em;margin:10px 0}
+  .mr-btn{background:#2424f8;color:#fafafe;border-radius:12px;padding:11px 8px;text-align:center;font-weight:700;font-size:12.5px}
+  .mr-btn.ghost{background:#fff;color:#2424f8;box-shadow:inset 0 0 0 2px #2424f8}
+  .mr-foot{background:#f8f8fc;padding:14px 18px;text-align:center;color:#5d5d85;font-size:10.5px;line-height:1.5}
+  .mr-flinks{display:flex;justify-content:center;gap:12px;margin-top:8px;flex-wrap:wrap}
+  .mr-flinks span{color:#4b4afb;text-decoration:underline}
+  /* heat zones — amber scale so it never blends with the email's own blue */
+  .hz{position:relative;border-radius:11px;box-shadow:0 0 0 2px var(--hc);background:color-mix(in srgb,var(--hc) 16%,transparent)}
+  .hz.top{box-shadow:0 0 0 3px var(--hc);background:color-mix(in srgb,var(--hc) 24%,transparent)}
+  .hz::after{content:attr(data-c);position:absolute;top:5px;right:5px;background:var(--hc);color:#3a1d00;font-family:var(--sans);font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;white-space:nowrap;box-shadow:0 1px 4px rgba(15,23,42,.3);font-variant-numeric:tabular-nums;z-index:2}
+  .hz.inline::after{top:-8px;right:-4px}
+  .hm-scale{display:flex;align-items:center;gap:10px;font-size:11.5px;color:var(--muted);font-weight:600;margin-bottom:16px}
+  .hm-scale .grad{flex:1;height:9px;border-radius:5px;background:linear-gradient(90deg,#fde68a,#fbbf24,#f59e0b,#ea8c04)}
+  .hzlist{display:grid;grid-template-columns:max-content 1fr auto auto;column-gap:12px;row-gap:12px;align-items:center}
+  .hzlist .zn{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;white-space:nowrap}
+  .hzlist .sw{width:11px;height:11px;border-radius:3px;flex:none}
+  .hzlist .zbar{height:8px;border-radius:4px;background:color-mix(in srgb,var(--ink) 7%,transparent);min-width:0}
+  .hzlist .zbar i{display:block;height:100%;border-radius:4px}
+  .hzlist .zc{font-size:14px;font-weight:800;text-align:right;font-variant-numeric:tabular-nums}
+  .hzlist .zp{font-size:12px;color:var(--muted);text-align:right;font-variant-numeric:tabular-nums;min-width:38px}
+  @media (max-width:820px){.hm-grid{grid-template-columns:1fr}}
+  footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}footer b{color:var(--ink)}
+  @media (max-width:900px){.kpis{grid-template-columns:repeat(4,1fr)}.cols,.insights{grid-template-columns:1fr}.risk{grid-template-columns:1fr}}
+  @media (max-width:520px){.kpis{grid-template-columns:repeat(2,1fr)}.frow{grid-template-columns:72px 1fr}.frow .fmeta{grid-column:2}.tlval{display:none}}
+</style>
+
+<style>
+  /* СМЫСЛ ВЕДЁТ ЦВЕТ.
+     Светофор - только на сущности, у которых есть хорошо/плохо:
+       зелёный  = живое, доставленное, верифицированное
+       янтарь   = предупреждение, обратимое (отписки, soft bounce, незавершённая настройка)
+       красный  = потеря/поломка (недоступные, hard bounce, ошибки, жалобы)
+     Типы рассылок хорошими или плохими не бывают - им нейтральный камень, чтобы они
+     не воровали внимание у светофора. Нейтрали тёплые. */
+  :root{--ground:#faf9f7;--card:#ffffff;--ink:#1c1917;--muted:#78716c;--line:#e7e5e4;
+        --accent:#57534e;--accent-ink:#ffffff;
+        --good:#16a34a;--warn:#f59e0b;--crit:#e88a8a;--hb:#a03a3a;--err:#a8a29e;--crit-d:#7f1d1d;
+        --blue:#2563eb;
+        --cat1:#2563eb;--cat2:#d97757;--cat3:#7c3aed;--cat4:#db3c73}
+  @media (prefers-color-scheme:dark){:root{
+        --ground:#1c1917;--card:#292524;--ink:#f5f5f4;--muted:#a8a29e;--line:#44403c;
+        --accent:#d6d3d1;--accent-ink:#1c1917;
+        --good:#4ade80;--warn:#fbbf24;--crit:#f0a0a0;--hb:#c05555;--err:#a8a29e;--crit-d:#b91c1c;
+        --blue:#60a5fa;
+        --cat1:#60a5fa;--cat2:#e08b6c;--cat3:#a78bfa;--cat4:#f472a0}}
+  :root[data-theme="light"]{--ground:#faf9f7;--card:#ffffff;--ink:#1c1917;--muted:#78716c;--line:#e7e5e4;
+        --accent:#57534e;--accent-ink:#ffffff;
+        --good:#16a34a;--warn:#f59e0b;--crit:#e88a8a;--hb:#a03a3a;--err:#a8a29e;--crit-d:#7f1d1d;
+        --blue:#2563eb;
+        --cat1:#2563eb;--cat2:#d97757;--cat3:#7c3aed;--cat4:#db3c73}
+  :root[data-theme="dark"]{--ground:#1c1917;--card:#292524;--ink:#f5f5f4;--muted:#a8a29e;--line:#44403c;
+        --accent:#d6d3d1;--accent-ink:#1c1917;
+        --good:#4ade80;--warn:#fbbf24;--crit:#f0a0a0;--hb:#c05555;--err:#a8a29e;--crit-d:#b91c1c;
+        --blue:#60a5fa;
+        --cat1:#60a5fa;--cat2:#e08b6c;--cat3:#a78bfa;--cat4:#f472a0}
+  .kpi .v.pos{color:var(--good)}
+  .mp-ava{background:var(--accent);color:var(--accent-ink)}
+  /* статус-чип живёт в <span> ВНУТРИ ячейки: display:inline-block на самом <td>
+     выбивает ячейку из табличного потока и разваливает таблицу */
+  .itbl .st-ok{color:var(--good)}
+  .itbl td .chip-warn{display:inline-block;padding:2px 9px;border-radius:6px;
+        background:color-mix(in srgb,var(--warn) 20%,transparent);color:#92400e;
+        font-weight:700;white-space:nowrap}
+  @media (prefers-color-scheme:dark){.itbl td .chip-warn{color:#fde68a}}
+  :root[data-theme="dark"] .itbl td .chip-warn{color:#fde68a}
+  .hm-scale .grad{background:linear-gradient(90deg,#fde68a,#fbbf24,#f59e0b,#d97706)}
+  .kpi .v{white-space:nowrap;font-size:19px}
+  .kpi .v .u{font-size:10px}
+  .kpi .ksub{display:block;font-size:12px;color:var(--muted);font-weight:600;margin-top:6px;font-variant-numeric:tabular-nums}
+  .healthbar{display:flex;height:34px;border-radius:10px;overflow:hidden;margin:6px 0 14px}
+  .hb{display:flex;align-items:center;justify-content:center;color:#fff;font-size:12.5px;font-weight:800;font-variant-numeric:tabular-nums;min-width:0}
+  .hlist{display:grid;grid-template-columns:max-content 1fr auto auto;column-gap:12px;row-gap:11px;align-items:center}
+  .hlist .hn{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;white-space:nowrap}
+  .hlist .sw{width:11px;height:11px;border-radius:3px;flex:none}
+  .hlist .hbar{height:8px;border-radius:4px;background:color-mix(in srgb,var(--ink) 7%,transparent);min-width:0}
+  .hlist .hbar i{display:block;height:100%;border-radius:4px}
+  .hlist .hc{font-size:14px;font-weight:800;text-align:right;font-variant-numeric:tabular-nums}
+  .hlist .hp{font-size:12px;color:var(--muted);text-align:right;font-variant-numeric:tabular-nums;min-width:44px}
+  .itbl{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+  .itbl th{font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);font-weight:700;text-align:left;padding:0 12px 9px 0}
+  .itbl td{padding:10px 12px 10px 0;border-top:1px solid var(--line);font-size:13.5px;font-weight:600;vertical-align:top}
+  .itbl .st-ok{color:var(--good);font-weight:700;white-space:nowrap}
+  .itbl .st-warn{color:var(--warn);font-weight:700;white-space:nowrap}
+  .itbl .mut{color:var(--muted);font-weight:500}
+  .mini-facts{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+  .mf{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow)}
+  .mf .l{font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 6px}
+  .mf .v{font-size:19px;font-weight:800;font-variant-numeric:tabular-nums}
+  .mf .s{font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.4}
+  .toplist{display:grid;grid-template-columns:auto 1fr max-content max-content auto;column-gap:14px;row-gap:13px;align-items:center}
+  .toplist .rk{width:22px;height:22px;border-radius:7px;background:color-mix(in srgb,var(--blue) 14%,transparent);color:var(--blue);font-size:11.5px;font-weight:800;display:flex;align-items:center;justify-content:center}
+  .toplist .tn{font-size:13.5px;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .toplist .td{font-size:12px;color:var(--muted);font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .toplist .tbar{height:8px;border-radius:4px;background:color-mix(in srgb,var(--blue) 12%,transparent);width:110px}
+  .toplist .tbar i{display:block;height:100%;border-radius:4px;background:var(--blue)}
+  .toplist .tv{font-size:14.5px;font-weight:800;color:var(--blue);font-variant-numeric:tabular-nums;text-align:right}
+  @media (max-width:900px){.mini-facts{grid-template-columns:repeat(2,1fr)}.toplist{grid-template-columns:auto 1fr auto;row-gap:8px}.toplist .tbar{display:none}.toplist .td{grid-column:2}}
+</style>
+
+<div class="wrap"><div class="inner">
+
+  <header>
+    <p class="eyebrow">RuSender · Обзор аккаунта</p>
+    <h1>Обзор аккаунта</h1>
+    <div class="card infocard">
+      <div class="ic-facts" style="border-top:none;padding-top:0;margin-top:0">
+        <div class="fact"><span class="ic-l">Возраст аккаунта</span><span class="ic-v">2 года 4 месяца</span><span class="ic-sub">от первой кампании</span></div>
+        <div class="fact"><span class="ic-l">Контактов в базе</span><span class="ic-v">20 064</span><span class="ic-sub">73 списка</span></div>
+        <div class="fact"><span class="ic-l">Отправлено писем</span><span class="ic-v">465 190</span><span class="ic-sub">191 завершённая кампания</span></div>
+        <div class="fact"><span class="ic-l">Домены</span><span class="ic-v">3</span><span class="ic-sub"><span style="color:var(--good)">1 верифицирован</span> · 2 нет — детали ниже</span></div>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <div class="sec-h"><h2>Объёмы за всё время</h2><span class="note">доли отписок и жалоб — от доставленных, ошибок — от отправленных</span></div>
+    <div class="kpis" style="grid-template-columns:repeat(6,1fr)">
+      <div class="kpi"><p class="l">Кампаний</p><div class="v">191</div><span class="ksub">из 235 созданных</span></div>
+      <div class="kpi"><p class="l">Отправлено</p><div class="v">465 190</div><span class="ksub">писем</span></div>
+      <div class="kpi"><p class="l">Доставлено</p><div class="v pos">99,6%</div><span class="ksub">463 411 писем</span></div>
+      <div class="kpi"><p class="l">Отписки</p><div class="v">0,50%</div><span class="ksub">2 332 контакта</span></div>
+      <div class="kpi"><p class="l">Жалобы</p><div class="v">0,06%</div><span class="ksub">286 жалоб</span></div>
+      <div class="kpi"><p class="l">Ошибки</p><div class="v">0,39%</div><span class="ksub">1 806 писем</span></div>
+    </div>
+    <p style="margin:12px 2px 0;font-size:12.5px;color:var(--muted)">Открываемость и клики агрегированно не показываются: кампании разных типов и аудиторий нельзя усреднять в одну цифру. Смотрите отчёты по отдельным рассылкам.</p>
+  </section>
+
+  <section>
+    <div class="sec-h"><h2>Здоровье базы</h2><span class="note">20 064 уникальных контакта</span></div>
+    <div class="card">
+      <div class="healthbar">
+        <div class="hb" style="width:75.6%;background:var(--good)">активные · 75,6%</div>
+        <div class="hb" style="width:12.7%;background:var(--warn)">12,7%</div>
+        <div class="hb" style="width:11.7%;background:var(--crit)">11,7%</div>
+      </div>
+      <div class="hlist">
+        <span class="hn"><span class="sw" style="background:var(--good)"></span>Активные — можно отправлять</span>
+        <span class="hbar"><i style="width:100%;background:var(--good)"></i></span>
+        <span class="hc">15 175</span><span class="hp">75,6%</span>
+        <span class="hn"><span class="sw" style="background:var(--warn)"></span>Отписались</span>
+        <span class="hbar"><i style="width:16.7%;background:var(--warn)"></i></span>
+        <span class="hc">2 541</span><span class="hp">12,7%</span>
+        <span class="hn"><span class="sw" style="background:var(--crit)"></span>Недоступны</span>
+        <span class="hbar"><i style="width:15.5%;background:var(--crit)"></i></span>
+        <span class="hc">2 348</span><span class="hp">11,7%</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h"><h2>Недоступные адреса</h2><span class="note">2 348 контактов · письма к ним не доходят или запрещены</span></div>
+    <div class="card">
+      <div class="hlist">
+        <span class="hn"><span class="sw" style="background:var(--hb)"></span>Hard bounce — адрес не существует</span>
+        <span class="hbar"><i style="width:100%;background:var(--hb)"></i></span>
+        <span class="hc">1 033</span><span class="hp">5,1%</span>
+        <span class="hn"><span class="sw" style="background:var(--err)"></span>Ошибки доставки</span>
+        <span class="hbar"><i style="width:87%;background:var(--err)"></i></span>
+        <span class="hc">900</span><span class="hp">4,5%</span>
+        <span class="hn"><span class="sw" style="background:var(--crit-d)"></span>Жалобы на спам</span>
+        <span class="hbar"><i style="width:34%;background:var(--crit-d)"></i></span>
+        <span class="hc">354</span><span class="hp">1,8%</span>
+        <span class="hn"><span class="sw" style="background:var(--warn)"></span>Soft bounce — временные сбои</span>
+        <span class="hbar"><i style="width:6%;background:var(--warn)"></i></span>
+        <span class="hc">61</span><span class="hp">0,3%</span>
+      </div>
+      <p style="margin:16px 0 0;font-size:12.5px;color:var(--muted)">Доли — от всей базы (20 064). RuSender автоматически исключает эти адреса из отправок; жалобы (354) — единственная категория, влияющая на репутацию отправителя.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h"><h2>Лучшие рассылки по открываемости</h2><span class="note">собственный OR каждой кампании · порог ≥ 1 000 доставленных</span></div>
+    <div class="card">
+      <div class="toplist">
+        <span class="rk">1</span><span class="tn">Апрельские новинки — новые + активные за 6 мес.</span><span class="td">апр 2026</span><span class="tbar"><i style="width:100%"></i></span><span class="tv">30,9%</span>
+        <span class="rk">2</span><span class="tn">Опрос. Подписчики без покупок</span><span class="td">авг 2024</span><span class="tbar"><i style="width:95%"></i></span><span class="tv">29,5%</span>
+        <span class="rk">3</span><span class="tn">🚀 Новинки сезона: мебель, свет и декор</span><span class="td">июл 2024</span><span class="tbar"><i style="width:85%"></i></span><span class="tv">26,4%</span>
+        <span class="rk">4</span><span class="tn">🌱 Весенний дайджест магазина</span><span class="td">май 2024</span><span class="tbar"><i style="width:84%"></i></span><span class="tv">26,1%</span>
+        <span class="rk">5</span><span class="tn">Контентная: 🔎 Как выбрать текстиль для спальни</span><span class="td">авг 2024</span><span class="tbar"><i style="width:79%"></i></span><span class="tv">24,4%</span>
+        <span class="rk">6</span><span class="tn">Контентная: 10 идей для уютной гостиной</span><span class="td">авг 2024</span><span class="tbar"><i style="width:78%"></i></span><span class="tv">24,2%</span>
+      </div>
+      <p style="margin:18px 0 0;font-size:13px;color:var(--muted);line-height:1.6">Это метрики каждой кампании по отдельности, они не усредняются. Сравнивать их напрямую тоже нельзя — у рассылок разные аудитории, размеры и годы отправки.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h"><h2>Ритм рассылок</h2><span class="note">число рассылок в месяц · цвет — тип · наведите на столбик для деталей</span></div>
+    <div class="card">
+      <div class="tl-legend">
+        <span class="lg"><i style="background:var(--cat1);height:9px;border-radius:3px"></i>Обычные · 161</span>
+        <span class="lg"><i style="background:var(--cat2);height:9px;border-radius:3px"></i>A/B-тесты · 26</span>
+        <span class="lg"><i style="background:var(--cat3);height:9px;border-radius:3px"></i>С автодосылом · 12</span>
+        <span class="lg"><i style="background:var(--cat4);height:9px;border-radius:3px"></i>Поэтапные · 1</span>
+      </div>
+      <svg class="linechart" viewBox="0 0 700 210" role="img" aria-label="Число рассылок по месяцам и типам">
+        <g stroke="var(--line)">
+          <line x1="44" y1="22" x2="664" y2="22" stroke-dasharray="3 4"/>
+          <line x1="44" y1="97" x2="664" y2="97" stroke-dasharray="3 4"/>
+          <line x1="44" y1="172" x2="664" y2="172"/>
+        </g>
+        <g font-size="10.5" fill="var(--muted)" text-anchor="end" font-variant-numeric="tabular-nums">
+          <text x="38" y="25">24</text><text x="38" y="100">12</text><text x="38" y="175">0</text>
+        </g>
+          <line x1="240" y1="22" x2="240" y2="176" stroke="var(--line)"/>
+          <line x1="514" y1="22" x2="514" y2="176" stroke="var(--line)"/>
+          <text x="137" y="202" text-anchor="middle" font-size="11.5" font-weight="800" fill="var(--ink)">2024</text>
+          <text x="377" y="202" text-anchor="middle" font-size="11.5" font-weight="800" fill="var(--ink)">2025</text>
+          <text x="594" y="202" text-anchor="middle" font-size="11.5" font-weight="800" fill="var(--ink)">2026</text>
+          <g><title>апр 2024 · 13 рассылок (13 обычных)</title><path d="M38.5,172.0 L38.5,93.8 Q38.5,90.8 41.5,90.8 L50.5,90.8 Q53.5,90.8 53.5,93.8 L53.5,172.0 Z" fill="var(--cat1)"/></g>
+          <g><title>май 2024 · 7 рассылок (7 обычных)</title><path d="M61.3,172.0 L61.3,131.2 Q61.3,128.2 64.3,128.2 L73.3,128.2 Q76.3,128.2 76.3,131.2 L76.3,172.0 Z" fill="var(--cat1)"/></g>
+          <g><title>июн 2024 · 5 рассылок (4 обычных, 1 A/B)</title><rect x="84.1" y="147.0" width="15" height="25.0" fill="var(--cat1)"/><path d="M84.1,145.5 L84.1,143.8 Q84.1,140.8 87.1,140.8 L96.1,140.8 Q99.1,140.8 99.1,143.8 L99.1,145.5 Z" fill="var(--cat2)"/></g>
+          <g><title>июл 2024 · 12 рассылок (11 обычных, 1 A/B)</title><rect x="106.9" y="103.2" width="15" height="68.8" fill="var(--cat1)"/><path d="M106.9,101.8 L106.9,100.0 Q106.9,97.0 109.9,97.0 L118.9,97.0 Q121.9,97.0 121.9,100.0 L121.9,101.8 Z" fill="var(--cat2)"/></g>
+          <g><title>авг 2024 · 22 рассылок (17 обычных, 5 A/B)</title><rect x="129.8" y="65.8" width="15" height="106.2" fill="var(--cat1)"/><path d="M129.8,64.2 L129.8,37.5 Q129.8,34.5 132.8,34.5 L141.8,34.5 Q144.8,34.5 144.8,37.5 L144.8,64.2 Z" fill="var(--cat2)"/></g>
+          <g><title>сен 2024 · 18 рассылок (14 обычных, 4 A/B)</title><rect x="152.6" y="84.5" width="15" height="87.5" fill="var(--cat1)"/><path d="M152.6,83.0 L152.6,62.5 Q152.6,59.5 155.6,59.5 L164.6,59.5 Q167.6,59.5 167.6,62.5 L167.6,83.0 Z" fill="var(--cat2)"/></g>
+          <g><title>окт 2024 · 12 рассылок (11 обычных, 1 A/B)</title><rect x="175.4" y="103.2" width="15" height="68.8" fill="var(--cat1)"/><path d="M175.4,101.8 L175.4,100.0 Q175.4,97.0 178.4,97.0 L187.4,97.0 Q190.4,97.0 190.4,100.0 L190.4,101.8 Z" fill="var(--cat2)"/></g>
+          <g><title>ноя 2024 · 4 рассылок (4 обычных)</title><path d="M198.2,172.0 L198.2,150.0 Q198.2,147.0 201.2,147.0 L210.2,147.0 Q213.2,147.0 213.2,150.0 L213.2,172.0 Z" fill="var(--cat1)"/></g>
+          <g><title>дек 2024 · 2 рассылок (1 обычных, 1 A/B)</title><rect x="221.0" y="165.8" width="15" height="6.2" fill="var(--cat1)"/><path d="M221.0,164.2 L221.0,162.5 Q221.0,159.5 224.0,159.5 L233.0,159.5 Q236.0,159.5 236.0,162.5 L236.0,164.2 Z" fill="var(--cat2)"/></g>
+          <g><title>янв 2025 · 3 рассылок (3 обычных)</title><path d="M243.8,172.0 L243.8,156.2 Q243.8,153.2 246.8,153.2 L255.8,153.2 Q258.8,153.2 258.8,156.2 L258.8,172.0 Z" fill="var(--cat1)"/></g>
+          <g><title>фев 2025 · 2 рассылок (2 обычных)</title><path d="M266.6,172.0 L266.6,162.5 Q266.6,159.5 269.6,159.5 L278.6,159.5 Q281.6,159.5 281.6,162.5 L281.6,172.0 Z" fill="var(--cat1)"/></g>
+          <g><title>мар 2025 · 7 рассылок (6 обычных, 1 A/B)</title><rect x="289.5" y="134.5" width="15" height="37.5" fill="var(--cat1)"/><path d="M289.5,133.0 L289.5,131.2 Q289.5,128.2 292.5,128.2 L301.5,128.2 Q304.5,128.2 304.5,131.2 L304.5,133.0 Z" fill="var(--cat2)"/></g>
+          <g><title>апр 2025 · 6 рассылок (4 обычных, 2 с досылом)</title><rect x="312.3" y="147.0" width="15" height="25.0" fill="var(--cat1)"/><path d="M312.3,145.5 L312.3,137.5 Q312.3,134.5 315.3,134.5 L324.3,134.5 Q327.3,134.5 327.3,137.5 L327.3,145.5 Z" fill="var(--cat3)"/></g>
+          <g><title>май 2025 · 10 рассылок (9 обычных, 1 с досылом)</title><rect x="335.1" y="115.8" width="15" height="56.2" fill="var(--cat1)"/><path d="M335.1,114.2 L335.1,112.5 Q335.1,109.5 338.1,109.5 L347.1,109.5 Q350.1,109.5 350.1,112.5 L350.1,114.2 Z" fill="var(--cat3)"/></g>
+          <g><title>июн 2025 · 9 рассылок (7 обычных, 2 с досылом)</title><rect x="357.9" y="128.2" width="15" height="43.8" fill="var(--cat1)"/><path d="M357.9,126.8 L357.9,118.8 Q357.9,115.8 360.9,115.8 L369.9,115.8 Q372.9,115.8 372.9,118.8 L372.9,126.8 Z" fill="var(--cat3)"/></g>
+          <g><title>июл 2025 · 8 рассылок (8 обычных)</title><path d="M380.7,172.0 L380.7,125.0 Q380.7,122.0 383.7,122.0 L392.7,122.0 Q395.7,122.0 395.7,125.0 L395.7,172.0 Z" fill="var(--cat1)"/></g>
+          <g><title>авг 2025 · 3 рассылок (3 обычных)</title><path d="M403.5,172.0 L403.5,156.2 Q403.5,153.2 406.5,153.2 L415.5,153.2 Q418.5,153.2 418.5,156.2 L418.5,172.0 Z" fill="var(--cat1)"/></g>
+          <g><title>сен 2025 · 1 рассылок (1 обычных)</title><path d="M426.4,172.0 L426.4,168.8 Q426.4,165.8 429.4,165.8 L438.4,165.8 Q441.4,165.8 441.4,168.8 L441.4,172.0 Z" fill="var(--cat1)"/></g>
+          <g><title>окт 2025 · 11 рассылок (10 обычных, 1 с досылом)</title><rect x="449.2" y="109.5" width="15" height="62.5" fill="var(--cat1)"/><path d="M449.2,108.0 L449.2,106.2 Q449.2,103.2 452.2,103.2 L461.2,103.2 Q464.2,103.2 464.2,106.2 L464.2,108.0 Z" fill="var(--cat3)"/></g>
+          <g><title>ноя 2025 · 7 рассылок (5 обычных, 2 A/B)</title><rect x="472.0" y="140.8" width="15" height="31.2" fill="var(--cat1)"/><path d="M472.0,139.2 L472.0,131.2 Q472.0,128.2 475.0,128.2 L484.0,128.2 Q487.0,128.2 487.0,131.2 L487.0,139.2 Z" fill="var(--cat2)"/></g>
+          <g><title>дек 2025 · 1 рассылок (1 A/B)</title><path d="M494.8,172.0 L494.8,168.8 Q494.8,165.8 497.8,165.8 L506.8,165.8 Q509.8,165.8 509.8,168.8 L509.8,172.0 Z" fill="var(--cat2)"/></g>
+          <g><title>янв 2026 · 6 рассылок (5 обычных, 1 поэтапных)</title><rect x="517.6" y="140.8" width="15" height="31.2" fill="var(--cat1)"/><path d="M517.6,139.2 L517.6,137.5 Q517.6,134.5 520.6,134.5 L529.6,134.5 Q532.6,134.5 532.6,137.5 L532.6,139.2 Z" fill="var(--cat4)"/></g>
+          <g><title>фев 2026 · 2 рассылок (1 обычных, 1 A/B)</title><rect x="540.4" y="165.8" width="15" height="6.2" fill="var(--cat1)"/><path d="M540.4,164.2 L540.4,162.5 Q540.4,159.5 543.4,159.5 L552.4,159.5 Q555.4,159.5 555.4,162.5 L555.4,164.2 Z" fill="var(--cat2)"/></g>
+          <g><title>мар 2026 · 7 рассылок (2 обычных, 2 A/B, 3 с досылом)</title><rect x="563.2" y="159.5" width="15" height="12.5" fill="var(--cat1)"/><rect x="563.2" y="147.0" width="15" height="11.0" fill="var(--cat2)"/><path d="M563.2,145.5 L563.2,131.2 Q563.2,128.2 566.2,128.2 L575.2,128.2 Q578.2,128.2 578.2,131.2 L578.2,145.5 Z" fill="var(--cat3)"/></g>
+          <g><title>апр 2026 · 1 рассылок (1 обычных)</title><path d="M586.1,172.0 L586.1,168.8 Q586.1,165.8 589.1,165.8 L598.1,165.8 Q601.1,165.8 601.1,168.8 L601.1,172.0 Z" fill="var(--cat1)"/></g>
+          <g><title>май 2026 · 1 рассылок (1 A/B)</title><path d="M608.9,172.0 L608.9,168.8 Q608.9,165.8 611.9,165.8 L620.9,165.8 Q623.9,165.8 623.9,168.8 L623.9,172.0 Z" fill="var(--cat2)"/></g>
+          <g><title>июн 2026 · 1 рассылок (1 с досылом)</title><path d="M631.7,172.0 L631.7,168.8 Q631.7,165.8 634.7,165.8 L643.7,165.8 Q646.7,165.8 646.7,168.8 L646.7,172.0 Z" fill="var(--cat3)"/></g>
+          <g><title>июл 2026 · 4 рассылок (3 обычных, 1 A/B)</title><rect x="654.5" y="153.2" width="15" height="18.8" fill="var(--cat1)"/><path d="M654.5,151.8 L654.5,150.0 Q654.5,147.0 657.5,147.0 L666.5,147.0 Q669.5,147.0 669.5,150.0 L669.5,151.8 Z" fill="var(--cat2)"/></g>
+          <text x="46" y="86" text-anchor="middle" font-size="10" font-weight="700" fill="var(--ink)">13</text>
+          <text x="114" y="92" text-anchor="middle" font-size="10" font-weight="700" fill="var(--ink)">12</text>
+          <text x="137" y="30" text-anchor="middle" font-size="10" font-weight="700" fill="var(--ink)">22</text>
+          <text x="160" y="54" text-anchor="middle" font-size="10" font-weight="700" fill="var(--ink)">18</text>
+          <text x="183" y="92" text-anchor="middle" font-size="10" font-weight="700" fill="var(--ink)">12</text>
+          <text x="343" y="104" text-anchor="middle" font-size="10" font-weight="700" fill="var(--ink)">10</text>
+          <text x="457" y="98" text-anchor="middle" font-size="10" font-weight="700" fill="var(--ink)">11</text>
+          <text x="114" y="187" text-anchor="middle" font-size="9.5" fill="var(--muted)">июл</text>
+          <text x="251" y="187" text-anchor="middle" font-size="9.5" fill="var(--muted)">янв</text>
+          <text x="388" y="187" text-anchor="middle" font-size="9.5" fill="var(--muted)">июл</text>
+          <text x="525" y="187" text-anchor="middle" font-size="9.5" fill="var(--muted)">янв</text>
+          <text x="662" y="187" text-anchor="middle" font-size="9.5" fill="var(--muted)">июл</text>
+      </svg>
+      <p class="tlnote">Рассылки выходят непрерывно все 28 месяцев: чаще всего 3–8 в месяц, самые плотные — август-сентябрь 2024 (22 и 18). A/B-тесты появляются волнами (лето-осень 2024, конец 2025 — 2026), досылы — с весны 2025. Папки кампаний: «Ежемесячные новостные», «Опросы», «Акции».</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h"><h2>Инфраструктура: домены</h2></div>
+    <div class="card">
+      <div style="overflow-x:auto">
+      <table class="itbl">
+        <thead><tr><th>Домен</th><th>Статус</th><th>DKIM / SPF / DMARC</th><th>Примечание</th></tr></thead>
+        <tbody>
+          <tr><td><b>domovoy-store.ru</b></td><td class="st-ok">верифицирован ✓</td><td class="st-ok">✓ / ✓ / ✓</td><td class="mut">рабочий домен всех отправок</td></tr>
+          <tr><td>promo-domovoy.ru</td><td><span class="chip-warn">не верифицирован</span></td><td class="mut">— / — / —</td><td class="mut">DNS-записи не настроены</td></tr>
+          <tr><td>magazin.tst</td><td><span class="chip-warn">не верифицирован</span></td><td class="mut">— / — / —</td><td class="mut">несуществующая зона, тестовая запись</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h"><h2>Инфраструктура: отправители</h2><span class="note">10 адресов · все подтверждены</span></div>
+    <div class="card">
+      <div style="overflow-x:auto">
+      <table class="itbl">
+        <thead><tr><th>Отправитель</th><th>Домен</th><th>Добавлен</th><th>Статус</th></tr></thead>
+        <tbody>
+          <tr><td><b>hello@domovoy-store.ru</b></td><td class="mut">domovoy-store.ru ✓</td><td class="mut">янв 2024</td><td class="st-ok">подтверждён</td></tr>
+          <tr><td>olga@domovoy-store.ru</td><td class="mut">domovoy-store.ru ✓</td><td class="mut">янв 2024</td><td class="st-ok">подтверждён</td></tr>
+          <tr><td>agency@promo-partner.ru</td><td class="mut">внешний</td><td class="mut">янв 2024</td><td class="st-ok">подтверждён</td></tr>
+          <tr><td>dmitry@domovoy-store.ru</td><td class="mut">domovoy-store.ru ✓</td><td class="mut">янв 2025</td><td class="st-ok">подтверждён</td></tr>
+          <tr><td>support@domovoy-store.ru</td><td class="mut">domovoy-store.ru ✓</td><td class="mut">май 2025</td><td class="st-ok">подтверждён</td></tr>
+          <tr><td>content@domovoy-store.ru</td><td class="mut">domovoy-store.ru ✓</td><td class="mut">май 2025</td><td class="st-ok">подтверждён</td></tr>
+          <tr><td>sergey@domovoy-store.ru</td><td class="mut">domovoy-store.ru ✓</td><td class="mut">июн 2025</td><td class="st-ok">подтверждён</td></tr>
+          <tr><td>anna@domovoy-store.ru</td><td class="mut">domovoy-store.ru ✓</td><td class="mut">окт 2025</td><td class="st-ok">подтверждён</td></tr>
+          <tr><td>domovoy.team@example.com</td><td class="mut">внешний</td><td class="mut">ноя 2025</td><td class="st-ok">подтверждён</td></tr>
+          <tr><td>test@domovoy-store.ru</td><td class="mut">domovoy-store.ru ✓</td><td class="mut">фев 2026</td><td class="st-ok">подтверждён</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h"><h2>Инфраструктура: отправка и автоматизация</h2></div>
+    <div class="card" style="margin-bottom:14px">
+      <div style="overflow-x:auto">
+      <table class="itbl">
+        <thead><tr><th>Вебхук</th><th>Куда шлёт</th><th>События</th><th>Статус</th></tr></thead>
+        <tbody>
+          <tr><td><b>Конструктор триггеров</b></td><td class="mut">crm.domovoy-store.ru/…</td><td class="mut">старт рассылки</td><td class="st-ok">активен</td></tr>
+          <tr><td>CRM webhook</td><td class="mut">…ngrok-free.app/webhook</td><td class="mut">жизненный цикл рассылки (6 событий)</td><td><span class="chip-warn">URL временный (ngrok)</span></td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+    <div class="mini-facts">
+      <div class="mf"><p class="l">Ключи отправки</p><div class="v">10</div><div class="s">все активны, без throttling</div></div>
+      <div class="mf"><p class="l">Списки</p><div class="v">73</div><div class="s">крупнейший — «Основная база 27.07» · 18 290</div></div>
+      <div class="mf"><p class="l">Сегменты</p><div class="v">3</div><div class="s">2 созданы в июле 2026</div></div>
+      <div class="mf"><p class="l">Шаблоны</p><div class="v">77</div><div class="s">письма и триггеры</div></div>
+      <div class="mf"><p class="l">Цепочки</p><div class="v">3</div><div class="s">1 активна · 1 на паузе · 1 черновик</div></div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Источник: RuSender API — <b>contacts_statistics</b>, <b>campaigns_list</b> (withStats), <b>lists_list</b>, <b>domains_list</b>, <b>senders_list</b>, <b>external_mail_keys_list</b>, <b>webhooks_list</b>, <b>segments_list</b>, <b>folders_list</b>, <b>templates_list</b>, цепочки. Отчёт намеренно не содержит усреднённых метрик вовлечённости (OR/CTOR по аккаунту или периодам). Доли отписок и жалоб — от доставленных, ошибок — от отправленных. ⚠️ Счётчики объёмов посчитаны по <b>200 кампаниям из 235</b>; 35 самых первых (в основном тестовых, до апр. 2024) не вошли. Составные части рассылок (варианты A/B и досылы) не отдаются в списке кампаний, поэтому реальные объёмы выше. Сформировано 06.08.2026.</p>
+  </footer>
+
+</div></div>

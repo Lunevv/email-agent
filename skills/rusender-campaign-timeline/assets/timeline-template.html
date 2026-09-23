@@ -1,0 +1,335 @@
+<title>Таймлайн рассылок — RuSender</title>
+<style>
+  :root{
+    --ground:#faf9f7;--card:#ffffff;--ink:#1c1917;--muted:#78716c;--line:#e7e5e4;
+    --blue:#2563eb;--good:#16a34a;--warn:#f59e0b;--crit:#dc2626;--neutral:#a8a29e;
+    --reg:#2563eb;--ab:#d97757;--fu:#7c3aed;--ch:#db3c73;--star:#f59e0b;
+    --shadow:0 1px 2px rgba(28,25,23,.05),0 10px 26px rgba(28,25,23,.06);
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --ground:#1c1917;--card:#292524;--ink:#f5f5f4;--muted:#a8a29e;--line:#44403c;
+    --blue:#60a5fa;--good:#4ade80;--warn:#fbbf24;--crit:#f87171;--neutral:#78716c;
+    --reg:#60a5fa;--ab:#e08b6c;--fu:#a78bfa;--ch:#f472a0;--star:#fbbf24;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px rgba(0,0,0,.4);
+  }}
+  :root[data-theme="light"]{--ground:#faf9f7;--card:#ffffff;--ink:#1c1917;--muted:#78716c;--line:#e7e5e4;
+    --blue:#2563eb;--good:#16a34a;--warn:#f59e0b;--crit:#dc2626;--neutral:#a8a29e;
+    --reg:#2563eb;--ab:#d97757;--fu:#7c3aed;--ch:#db3c73;--star:#f59e0b;}
+  :root[data-theme="dark"]{--ground:#1c1917;--card:#292524;--ink:#f5f5f4;--muted:#a8a29e;--line:#44403c;
+    --blue:#60a5fa;--good:#4ade80;--warn:#fbbf24;--crit:#f87171;--neutral:#78716c;
+    --reg:#60a5fa;--ab:#e08b6c;--fu:#a78bfa;--ch:#f472a0;--star:#fbbf24;}
+  *{box-sizing:border-box}
+  .wrap{font-family:var(--sans);background:var(--ground);color:var(--ink);min-height:100vh;
+        padding:40px 24px 64px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .inner{max-width:900px;margin:0 auto}
+  .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 10px}
+  h1{font-size:clamp(23px,3.4vw,31px);line-height:1.14;margin:0 0 12px;font-weight:800;letter-spacing:-.02em}
+  .lead{font-size:14.5px;color:var(--muted);margin:0 0 22px;max-width:74ch}
+  .lead b{color:var(--ink)}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;font-weight:600;
+          padding:13px 16px;background:var(--card);border:1px solid var(--line);
+          border-radius:12px;box-shadow:var(--shadow);margin:0 0 8px}
+  .legend span{display:flex;align-items:center;gap:7px}
+  .legend i{width:10px;height:10px;border-radius:50%;flex:none}
+  .legend i.ringed{background:var(--ground);box-shadow:inset 0 0 0 2.5px var(--fu)}
+  .flow{font-size:12px;color:var(--muted);margin:0 0 22px;max-width:74ch}
+  /* двусторонняя лента с настоящей осью: на оси точка и дата */
+  .row{display:grid;grid-template-columns:1fr 84px 1fr;align-items:stretch}
+  .cell{min-width:0;align-self:start}
+  .cell.c1{grid-column:1} .cell.c3{grid-column:3}
+  .rail{position:relative;grid-column:2;display:flex;flex-direction:column;align-items:center;padding-top:15px}
+  .rail::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;
+                margin-left:-1px;background:color-mix(in srgb,var(--muted) 45%,var(--line))}
+  .rail.dashed::before{background:repeating-linear-gradient(to bottom,
+                        color-mix(in srgb,var(--muted) 45%,var(--line)) 0 4px,transparent 4px 9px)}
+  .rail > *{position:relative;z-index:1}
+  .dot{width:11px;height:11px;border-radius:50%;box-shadow:0 0 0 4px var(--ground);flex:none}
+  .dot.t-reg{background:var(--reg)} .dot.t-ab{background:var(--ab)}
+  .dot.t-fu{background:var(--fu)}  .dot.t-ch{background:var(--ch)}
+  .dot.ring.t-ab{background:var(--ground);box-shadow:0 0 0 4px var(--ground),inset 0 0 0 2.5px var(--ab)}
+  .dot.ring.t-fu{background:var(--ground);box-shadow:0 0 0 4px var(--ground),inset 0 0 0 2.5px var(--fu)}
+  .datemark{margin-top:5px;background:var(--ground);padding:3px 4px;text-align:center;
+            font-variant-numeric:tabular-nums;line-height:1.2}
+  .datemark b{display:block;font-size:12.5px;font-weight:800}
+  .datemark span{display:block;font-size:11px;color:var(--muted);font-weight:600}
+  /* месяц — метка на оси; текст цветом текста, не приглушённый */
+  .mrow .rail{overflow:visible}
+  .mlabel{margin:12px 0;background:var(--ground);padding:4px 12px;border:1px solid var(--line);
+          border-radius:999px;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;
+          color:var(--ink);font-weight:800;white-space:nowrap}
+  .gaplabel{margin:10px 0;background:var(--ground);padding:4px 6px;font-size:10.5px;text-align:center;
+            color:var(--muted);font-weight:700;line-height:1.25}
+  .entry{position:relative;background:var(--card);border:1px solid var(--line);border-radius:12px;
+         padding:12px 15px;margin:8px 0;box-shadow:var(--shadow);min-width:0}
+  /* усик от карточки к оси */
+  .entry::after{content:"";position:absolute;top:22px;width:12px;height:2px;background:var(--line)}
+  .side-l .entry{margin-right:12px} .side-l .entry::after{right:-12px}
+  .side-r .entry{margin-left:12px}  .side-r .entry::after{left:-12px}
+  /* планка цепочки — со стороны оси */
+  .side-r .entry.part{border-left-width:3px}
+  .side-r .entry.part.t-ab{border-left-color:var(--ab)}
+  .side-r .entry.part.t-fu{border-left-color:var(--fu)}
+  .side-l .entry.part{border-right-width:3px}
+  .side-l .entry.part.t-ab{border-right-color:var(--ab)}
+  .side-l .entry.part.t-fu{border-right-color:var(--fu)}
+  .e-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px}
+  .type{font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;white-space:nowrap}
+  .type.t-reg{color:var(--reg);background:color-mix(in srgb,var(--reg) 12%,transparent)}
+  .type.t-ab{color:var(--ab);background:color-mix(in srgb,var(--ab) 18%,transparent)}
+  .type.t-fu{color:var(--fu);background:color-mix(in srgb,var(--fu) 13%,transparent)}
+  .type.t-ch{color:var(--ch);background:color-mix(in srgb,var(--ch) 13%,transparent)}
+  .kind{font-size:11.5px;font-weight:800;white-space:nowrap}
+  .kind.t-ab{color:var(--ab)} .kind.t-fu{color:var(--fu)}
+  .stepn{font-size:11px;font-weight:700;color:var(--muted);padding:1px 8px;border-radius:999px;
+         background:color-mix(in srgb,var(--ink) 6%,transparent);white-space:nowrap}
+  .status{font-size:11.5px;font-weight:700} .s-ok{color:var(--good)}
+  .e-name{font-size:14.5px;font-weight:700;line-height:1.35;text-wrap:balance}
+  .parts{font-size:12px;color:var(--muted);font-weight:600;margin-top:3px}
+  .chain{margin-top:6px;font-size:11.5px;color:var(--muted);font-weight:600}
+  .chain .mut{opacity:.75}
+  .ch-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:7px;vertical-align:1px}
+  .ch-dot.t-ab{background:var(--ab)} .ch-dot.t-fu{background:var(--fu)}
+  .vars{margin:8px 0 2px;padding-left:12px;border-left:2px dotted var(--line)}
+  .vrow{display:flex;gap:12px;align-items:baseline;padding:2px 0;font-size:12.5px}
+  .vrow .vn{font-weight:600;min-width:0}
+  .vrow .vm{margin-left:auto;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums;font-size:12px}
+  .win{color:var(--star);font-weight:800;font-size:11.5px;white-space:nowrap}
+  .e-meta{display:flex;gap:14px;flex-wrap:wrap;margin-top:9px;padding-top:8px;
+          border-top:1px solid var(--line);font-size:12.5px;font-variant-numeric:tabular-nums}
+  .e-meta .m{font-weight:600} .e-meta .mut{color:var(--muted);font-weight:500}
+  .e-meta .or{color:var(--blue)}
+  .e-meta .total{width:100%;color:var(--muted);font-weight:600}
+  .e-meta .total b{color:var(--ink)}
+  footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+  footer b{color:var(--ink)}
+  @media (max-width:760px){
+    /* узкий экран: односторонняя лента, ось слева, дата под точкой */
+    .row{grid-template-columns:64px 1fr}
+    .rail{grid-column:1;grid-row:1}
+    .cell.c1,.cell.c3{grid-column:2;grid-row:1}
+    .cell:empty{display:none}
+    .side-l .entry{margin-right:0;margin-left:12px;border-right-width:1px}
+    .side-l .entry::after{right:auto;left:-12px}
+    .side-l .entry.part{border-left-width:3px}
+    .side-l .entry.part.t-ab{border-left-color:var(--ab);border-right-color:var(--line)}
+    .side-l .entry.part.t-fu{border-left-color:var(--fu);border-right-color:var(--line)}
+    .mrow .rail{align-items:flex-start} .mlabel{margin-left:-6px}
+    .vrow{flex-direction:column;gap:0} .vrow .vm{margin-left:0}
+  }
+</style>
+<div class="wrap"><div class="inner">
+  <p class="eyebrow">RuSender · таймлайн</p>
+  <h1>Хроника рассылок аккаунта</h1>
+  <p class="lead">Каждая строка — реальная отправка: 37 отправок,
+     <b>223 352</b> писем, с 10.11.2025
+     по 30.07.2026. Части составных кампаний
+     (10 цепочек) стоят на своём фактическом времени и помечены принадлежностью
+     к цепочке. Черновики не показаны. Время московское.</p>
+  <div class="legend">
+    <span><i style="background:var(--reg)"></i>Обычная</span>
+    <span><i style="background:var(--ab)"></i>A/B-тест</span>
+    <span><i style="background:var(--fu)"></i>С автодосылом</span>
+    <span><i style="background:var(--ch)"></i>Поэтапная</span>
+    <span><i class="ringed"></i>часть цепочки</span>
+    <span><i style="background:var(--star)"></i>победитель A/B</span>
+  </div>
+  <p class="flow">↑ вверх — свежие отправки, вниз — вглубь истории.
+     <b>Слева от оси</b> — самостоятельные рассылки и первые отправки составных кампаний,
+     <b>справа</b> — их продолжения: рассылка победителя A/B и автодосыл по неоткрывшим.
+     Каждое стоит на своём фактическом времени. Варианты A/B уходят в одну минуту, поэтому
+     показаны списком внутри строки тестовой волны.</p>
+  <div class="row mrow"><div class="cell c1"></div><div class="rail"><span class="mlabel">июль 2026</span></div><div class="cell c3"></div></div><div class="row side-l">
+        <div class="cell c1"><div class="entry"><div class="e-top"><span class="type t-reg">Обычная</span><span class="status s-ok">завершена</span></div><div class="e-name">Финал распродажи: −33% на всё, промокод LETO33</div><div class="e-meta"><span class="m"><b>13 950</b> писем</span><span class="m">OR <b class="or">9.7%</b></span><span class="m mut">за 25 мин</span><span class="m mut">Основная база 27.07.2026</span><span class="m mut">#112538</span></div></div></div>
+        <div class="rail"><i class="dot t-reg"></i>
+          <span class="datemark"><b>30.07</b><span>12:30</span></span></div>
+        <div class="cell c3"></div>
+      </div><div class="row side-l">
+        <div class="cell c1"><div class="entry"><div class="e-top"><span class="type t-reg">Обычная</span><span class="status s-ok">завершена</span></div><div class="e-name">Досыл: распродажа −33% на всё, промокод LETO33</div><div class="e-meta"><span class="m"><b>12 394</b> писем</span><span class="m">OR <b class="or">4.3%</b></span><span class="m mut">за 20 мин</span><span class="m mut">Основная база 27.07.2026</span><span class="m mut">#112021</span></div></div></div>
+        <div class="rail"><i class="dot t-reg"></i>
+          <span class="datemark"><b>28.07</b><span>12:18</span></span></div>
+        <div class="cell c3"></div>
+      </div><div class="row side-l">
+        <div class="cell c1"><div class="entry"><div class="e-top"><span class="type t-reg">Обычная</span><span class="status s-ok">завершена</span></div><div class="e-name">Распродажа −33% на всё, промокод LETO33</div><div class="e-meta"><span class="m"><b>14 084</b> писем</span><span class="m">OR <b class="or">13.5%</b></span><span class="m mut">за 32 мин</span><span class="m mut">Основная база 27.07.2026</span><span class="m mut">#111859</span></div></div></div>
+        <div class="rail"><i class="dot t-reg"></i>
+          <span class="datemark"><b>27.07</b><span>13:48</span></span></div>
+        <div class="cell c3"></div>
+      </div><div class="row"><div class="cell c1"></div><div class="rail dashed"><span class="gaplabel">пауза<br>26 дней</span></div><div class="cell c3"></div></div><div class="row side-r">
+        <div class="cell c1"></div>
+        <div class="rail"><i class="dot t-ab ring"></i>
+          <span class="datemark"><b>01.07</b><span>12:19</span></span></div>
+        <div class="cell c3"><div class="entry part t-ab"><div class="e-top"><span class="type t-ab">A/B-тест</span><span class="kind t-ab">Рассылка победителя</span><span class="stepn">шаг 2 из 2</span></div><div class="e-name">Победитель — остальной базе: «Летняя коллекция: террасы, свет и текстиль»</div><div class="chain"><i class="ch-dot t-ab"></i><b>↖ продолжение</b> · «Летняя коллекция — вся база» <span class="mut">#107460</span> · 01.07 в 09:20</div><div class="e-meta"><span class="m"><b>6 781</b> писем</span><span class="m">OR <b class="or">13.5%</b></span><span class="m mut">за 25 мин</span><span class="m mut">Основная база 30.06.2026</span><span class="m mut">#107460</span><span class="m total">итого по цепочке: <b>13 564</b> писем · OR <b class="or">13.0%</b></span></div></div></div>
+      </div><div class="row side-l">
+        <div class="cell c1"><div class="entry part t-ab"><div class="e-top"><span class="type t-ab">A/B-тест</span><span class="kind t-ab">Тестовая волна A/B</span><span class="stepn">шаг 1 из 2</span></div><div class="e-name">Тестовая волна: 3 варианта темы</div><div class="chain"><i class="ch-dot t-ab"></i><b>начало цепочки, продолжение ↘</b> · «Летняя коллекция — вся база» <span class="mut">#107460</span> · 01.07 в 12:19</div><div class="vars"><div class="vrow"><span class="vn">«Обновили каталог»</span><span class="vm">2 259 · OR 12.4%</span></div><div class="vrow"><span class="vn">«Восемь новинок — и все для дачи 🌿»</span><span class="vm">2 262 · OR 11.5%</span></div><div class="vrow"><span class="vn">«Летняя коллекция: террасы, свет и текстиль» <span class="win">★ победитель</span></span><span class="vm">2 262 · OR 13.4%</span></div></div><div class="e-meta"><span class="m"><b>6 783</b> писем</span><span class="m">OR <b class="or">12.4%</b></span><span class="m mut">за 25 мин</span><span class="m mut">Основная база 30.06.2026</span><span class="m mut">#107460</span></div></div></div>
+        <div class="rail"><i class="dot t-ab ring"></i>
+          <span class="datemark"><b>01.07</b><span>09:20</span></span></div>
+        <div class="cell c3"></div>
+      </div><div class="row mrow"><div class="cell c1"></div><div class="rail"><span class="mlabel">июнь 2026</span></div><div class="cell c3"></div></div><div class="row"><div class="cell c1"></div><div class="rail dashed"><span class="gaplabel">пауза<br>7 дней</span></div><div class="cell c3"></div></div><div class="row side-r">
+        <div class="cell c1"></div>
+        <div class="rail"><i class="dot t-fu ring"></i>
+          <span class="datemark"><b>24.06</b><span>10:47</span></span></div>
+        <div class="cell c3"><div class="entry part t-fu"><div class="e-top"><span class="type t-fu">С автодосылом</span><span class="kind t-fu">Автодосыл · +48 ч</span><span class="stepn">шаг 2 из 2</span></div><div class="e-name">Автодосыл неоткрывшим: «Инструкция по уходу за садовой мебелью»</div><div class="chain"><i class="ch-dot t-fu"></i><b>↖ продолжение</b> · «Новая линейка садовой мебели» <span class="mut">#105587</span> · 22.06 в 10:30</div><div class="e-meta"><span class="m"><b>305</b> писем</span><span class="m">OR <b class="or">11.2%</b></span><span class="m mut">за меньше минуты</span><span class="m mut">Покупатели дачной категории</span><span class="m mut">#105589</span><span class="m total">итого по цепочке: <b>740</b> писем · OR <b class="or">23.2%</b></span></div></div></div>
+      </div><div class="row side-l">
+        <div class="cell c1"><div class="entry part t-fu"><div class="e-top"><span class="type t-fu">С автодосылом</span><span class="kind t-fu">Основная отправка</span><span class="stepn">шаг 1 из 2</span></div><div class="e-name">Новая линейка садовой мебели</div><div class="chain"><i class="ch-dot t-fu"></i><b>начало цепочки, продолжение ↘</b> · «Новая линейка садовой мебели» <span class="mut">#105587</span> · 24.06 в 10:47</div><div class="e-meta"><span class="m"><b>435</b> писем</span><span class="m">OR <b class="or">31.7%</b></span><span class="m mut">за 17 мин</span><span class="m mut">Покупатели дачной категории</span><span class="m mut">#105587</span></div></div></div>
+        <div class="rail"><i class="dot t-fu ring"></i>
+          <span class="datemark"><b>22.06</b><span>10:30</span></span></div>
+        <div class="cell c3"></div>
+      </div><div class="row mrow"><div class="cell c1"></div><div class="rail"><span class="mlabel">май 2026</span></div><div class="cell c3"></div></div><div class="row"><div class="cell c1"></div><div class="rail dashed"><span class="gaplabel">пауза<br>26 дней</span></div><div class="cell c3"></div></div><div class="row side-r">
+        <div class="cell c1"></div>
+        <div class="rail"><i class="dot t-ab ring"></i>
+          <span class="datemark"><b>27.05</b><span>17:18</span></span></div>
+        <div class="cell c3"><div class="entry part t-ab"><div class="e-top"><span class="type t-ab">A/B-тест</span><span class="kind t-ab">Рассылка победителя</span><span class="stepn">шаг 2 из 2</span></div><div class="e-name">Победитель — остальной базе: «Ваш сад готов к лету?»</div><div class="chain"><i class="ch-dot t-ab"></i><b>↖ продолжение</b> · «Майская подборка — вся база» <span class="mut">#101201</span> · 27.05 в 12:57</div><div class="e-meta"><span class="m"><b>5 207</b> писем</span><span class="m">OR <b class="or">15.6%</b></span><span class="m mut">за 24 мин</span><span class="m mut">Основная база 27.05.2026</span><span class="m mut">#101201</span><span class="m total">итого по цепочке: <b>13 016</b> писем · OR <b class="or">14.7%</b></span></div></div></div>
+      </div><div class="row side-l">
+        <div class="cell c1"><div class="entry part t-ab"><div class="e-top"><span class="type t-ab">A/B-тест</span><span class="kind t-ab">Тестовая волна A/B</span><span class="stepn">шаг 1 из 2</span></div><div class="e-name">Тестовая волна: 3 варианта темы</div><div class="chain"><i class="ch-dot t-ab"></i><b>начало цепочки, продолжение ↘</b> · «Майская подборка — вся база» <span class="mut">#101201</span> · 27.05 в 17:18</div><div class="vars"><div class="vrow"><span class="vn">«Ваш сад готов к лету?» <span class="win">★ победитель</span></span><span class="vm">2 603 · OR 14.2%</span></div><div class="vrow"><span class="vn">«Кое-что для сада, чего у вас ещё нет 👀»</span><span class="vm">2 602 · OR 13.8%</span></div><div class="vrow"><span class="vn">«Газон сам себя не польёт 🙂»</span><span class="vm">2 604 · OR 14.4%</span></div></div><div class="e-meta"><span class="m"><b>7 809</b> писем</span><span class="m">OR <b class="or">14.1%</b></span><span class="m mut">за 23 мин</span><span class="m mut">Основная база 27.05.2026</span><span class="m mut">#101201</span></div></div></div>
+        <div class="rail"><i class="dot t-ab ring"></i>
+          <span class="datemark"><b>27.05</b><span>12:57</span></span></div>
+        <div class="cell c3"></div>
+      </div><div class="row mrow"><div class="cell c1"></div><div class="rail"><span class="mlabel">апрель 2026</span></div><div class="cell c3"></div></div><div class="row"><div class="cell c1"></div><div class="rail dashed"><span class="gaplabel">пауза<br>28 дней</span></div><div class="cell c3"></div></div><div class="row side-l">
+        <div class="cell c1"><div class="entry"><div class="e-top"><span class="type t-reg">Обычная</span><span class="status s-ok">завершена</span></div><div class="e-name">Апрельские новинки — новые + активные за 6 мес.</div><div class="e-meta"><span class="m"><b>4 528</b> писем</span><span class="m">OR <b class="or">30.9%</b></span><span class="m mut">за 24 мин</span><span class="m mut">База 19.03 + новые 29.04</span><span class="m mut">#96411</span></div></div></div>
+        <div class="rail"><i class="dot t-reg"></i>
+          <span class="datemark"><b>29.04</b><span>15:18</span></span></div>
+        <div class="cell c3"></div>
+      </div><div class="row mrow"><div class="cell c1"></div><div class="rail"><span class="mlabel">март 2026</span></div><div class="cell c3"></div></div><div class="row"><div class="cell c1"></div><div class="rail dashed"><span class="gaplabel">пауза<br>33 дня</span></div><div class="cell c3"></div></div><div class="row side-r">
+        <div class="cell c1"></div>
+        <div class="rail"><i class="dot t-fu ring"></i>
+          <span class="datemark"><b>27.03</b><span>15:37</span></span></div>
+        <div class="cell c3"><div class="entry part t-fu"><div class="e-top"><span class="type t-fu">С автодосылом</span><span class="kind t-fu">Автодосыл · +48 ч</span><span class="stepn">шаг 2 из 2</span></div><div class="e-name">Автодосыл неоткрывшим: «Просто напомним про –30% на второй заказ 💙»</div><div class="chain"><i class="ch-dot t-fu"></i><b>↖ продолжение</b> · «3. Покупали один раз» <span class="mut">#89354</span> · 25.03 в 15:17</div><div class="e-meta"><span class="m"><b>203</b> писем</span><span class="m">OR <b class="or">5.4%</b></span><span class="m mut">за меньше минуты</span><span class="m mut">Разовые покупатели (акция)</span><span class="m mut">#89362</span><span class="m total">итого по цепочке: <b>460</b> писем · OR <b class="or">14.0%</b></span></div></div></div>
+      </div><div class="row side-r">
+        <div class="cell c1"></div>
+        <div class="rail"><i class="dot t-fu ring"></i>
+          <span class="datemark"><b>26.03</b><span>15:57</span></span></div>
+        <div class="cell c3"><div class="entry part t-fu"><div class="e-top"><span class="type t-fu">С автодосылом</span><span class="kind t-fu">Автодосыл · +24 ч</span><span class="stepn">шаг 2 из 2</span></div><div class="e-name">Автодосыл неоткрывшим: «–15% всё ещё действует»</div><div class="chain"><i class="ch-dot t-fu"></i><b>↖ продолжение</b> · «1. Ещё не покупали» <span class="mut">#89359</span> · 25.03 в 15:24</div><div class="e-meta"><span class="m"><b>10 079</b> писем</span><span class="m">OR <b class="or">4.0%</b></span><span class="m mut">за 31 мин</span><span class="m mut">Без покупок (акция)</span><span class="m mut">#89365</span><span class="m total">итого по цепочке: <b>21 124</b> писем · OR <b class="or">7.4%</b></span></div></div></div>
+      </div><div class="row side-r">
+        <div class="cell c1"></div>
+        <div class="rail"><i class="dot t-fu ring"></i>
+          <span class="datemark"><b>26.03</b><span>15:45</span></span></div>
+        <div class="cell c3"><div class="entry part t-fu"><div class="e-top"><span class="type t-fu">С автодосылом</span><span class="kind t-fu">Автодосыл · +24 ч</span><span class="stepn">шаг 2 из 2</span></div><div class="e-name">Автодосыл неоткрывшим: «–5% на аксессуары всё ещё доступно»</div><div class="chain"><i class="ch-dot t-fu"></i><b>↖ продолжение</b> · «2. Давно не покупали» <span class="mut">#89358</span> · 25.03 в 15:24</div><div class="e-meta"><span class="m"><b>547</b> писем</span><span class="m">OR <b class="or">5.9%</b></span><span class="m mut">за 17 мин</span><span class="m mut">Спящие покупатели (акция)</span><span class="m mut">#89364</span><span class="m total">итого по цепочке: <b>1 181</b> писем · OR <b class="or">11.1%</b></span></div></div></div>
+      </div><div class="row side-l">
+        <div class="cell c1"><div class="entry part t-fu"><div class="e-top"><span class="type t-fu">С автодосылом</span><span class="kind t-fu">Основная отправка</span><span class="stepn">шаг 1 из 2</span></div><div class="e-name">1. Ещё не покупали — «Самое время присмотреться…»</div><div class="chain"><i class="ch-dot t-fu"></i><b>начало цепочки, продолжение ↘</b> · «1. Ещё не покупали» <span class="mut">#89359</span> · 26.03 в 15:57</div><div class="e-meta"><span class="m"><b>11 045</b> писем</span><span class="m">OR <b class="or">10.5%</b></span><span class="m mut">за 33 мин</span><span class="m mut">Без покупок (акция)</span><span class="m mut">#89359</span></div></div></div>
+        <div class="rail"><i class="dot t-fu ring"></i>
+          <span class="datemark"><b>25.03</b><span>15:24</span></span></div>
+        <div class="cell c3"></div>
+      </div><div class="row side-l">
+        <div class="cell c1"><div class="entry part t-fu"><div class="e-top"><span class="type t-fu">С автодосылом</span><span class="kind t-fu">Основная отправка</span><span class="stepn">шаг 1 из 2</span></div><div class="e-name">2. Давно не покупали — «Заглянуть… или пока не до этого?»</div><div class="chain"><i class="ch-dot t-fu"></i><b>начало цепочки, продолжение ↘</b> · «2. Давно не покупали» <span class="mut">#89358</span> · 26.03 в 15:45</div><div class="e-meta"><span class="m"><b>634</b> писем</span><span class="m">OR <b class="or">15.6%</b></span><span class="m mut">за 20 мин</span><span class="m mut">Спящие покупатели (акция)</span><span class="m mut">#89358</span></div></div></div>
+        <div class="rail"><i class="dot t-fu ring"></i>
+          <span class="datemark"><b>25.03</b><span>15:24</span></span></div>
+        <div class="cell c3"></div>
+      </div><div class="row side-l">
+        <div class="cell c1"><div class="entry part t-fu"><div class="e-top"><span class="type t-fu">С автодосылом</span><span class="kind t-fu">Основная отправка</span><span class="stepn">шаг 1 из 2</span></div><div class="e-name">3. Покупали один раз — «–30% на второй заказ для вас»</div><div class="chain"><i class="ch-dot t-fu"></i><b>начало цепочки, продолжение ↘</b> · «3. Покупали один раз» <span class="mut">#89354</span> · 27.03 в 15:37</div><div class="e-meta"><span class="m"><b>256</b> писем</span><span class="m">OR <b class="or">20.8%</b></span><span class="m mut">за 19 мин</span><span class="m mut">Разовые покупатели (акция)</span><span class="m mut">#89354</span></div></div></div>
+        <div class="rail"><i class="dot t-fu ring"></i>
+          <span class="datemark"><b>25.03</b><span>15:17</span></span></div>
+        <div class="cell c3"></div>
+      </div><div class="row side-r">
+        <div class="cell c1"></div>
+        <div class="rail"><i class="dot t-ab ring"></i>
+          <span class="datemark"><b>20.03</b><span>10:31</span></span></div>
+        <div class="cell c3"><div class="entry part t-ab"><div class="e-top"><span class="type t-ab">A/B-тест</span><span class="kind t-ab">Рассылка победителя</span><span class="stepn">шаг 2 из 2</span></div><div class="e-name">Победитель — остальной базе: «Квиз плиз! Или наша весенняя коллекция»</div><div class="chain"><i class="ch-dot t-ab"></i><b>↖ продолжение</b> · «А/B тест — Весенняя коллекция» <span class="mut">#88057</span> · 19.03 в 15:26</div><div class="e-meta"><span class="m"><b>4 799</b> писем</span><span class="m">OR <b class="or">12.6%</b></span><span class="m mut">за 16 мин</span><span class="m mut">База подписчиков 19.03.2026</span><span class="m mut">#88057</span><span class="m total">итого по цепочке: <b>11 996</b> писем · OR <b class="or">12.5%</b></span></div></div></div>
+      </div><div class="row side-l">
+        <div class="cell c1"><div class="entry part t-ab"><div class="e-top"><span class="type t-ab">A/B-тест</span><span class="kind t-ab">Тестовая волна A/B</span><span class="stepn">шаг 1 из 2</span></div><div class="e-name">Тестовая волна: 2 варианта темы</div><div class="chain"><i class="ch-dot t-ab"></i><b>начало цепочки, продолжение ↘</b> · «А/B тест — Весенняя коллекция» <span class="mut">#88057</span> · 20.03 в 10:31</div><div class="vars"><div class="vrow"><span class="vn">«Казалось бы, при чём тут кактус и уют… 🧐»</span><span class="vm">3 599 · OR 12.8%</span></div><div class="vrow"><span class="vn">«Квиз плиз! Или наша весенняя коллекция» <span class="win">★ победитель</span></span><span class="vm">3 598 · OR 12.1%</span></div></div><div class="e-meta"><span class="m"><b>7 197</b> писем</span><span class="m">OR <b class="or">12.5%</b></span><span class="m mut">за 11 мин</span><span class="m mut">База подписчиков 19.03.2026</span><span class="m mut">#88057</span></div></div></div>
+        <div class="rail"><i class="dot t-ab ring"></i>
+          <span class="datemark"><b>19.03</b><span>15:26</span></span></div>
+        <div class="cell c3"></div>
+      </div><div class="row side-l">
+        <div class="cell c1"><div class="entry"><div class="e-top"><span class="type t-reg">Обычная</span><span class="status s-ok">завершена</span></div><div class="e-name">Обновление программы лояльности</div><div class="e-meta"><span class="m"><b>91</b> писем</span><span class="m">OR <b class="or">37.4%</b></span><span class="m mut">за меньше минуты</span><span class="m mut">База — программа лояльности</span><span class="m mut">#87399</span></div></div></div>
+        <div class="rail"><i class="dot t-reg"></i>
+          <span class="datemark"><b>17.03</b><span>15:35</span></span></div>
+        <div class="cell c3"></div>
+      </div><div class="row"><div class="cell c1"></div><div class="rail dashed"><span class="gaplabel">пауза<br>11 дней</span></div><div class="cell c3"></div></div><div class="row side-l">
+        <div class="cell c1"><div class="entry"><div class="e-top"><span class="type t-reg">Обычная</span><span class="status s-ok">завершена</span></div><div class="e-name">Досыл по неоткрывшим: «😼 Талисман уюта для дома»</div><div class="e-meta"><span class="m"><b>10 684</b> писем</span><span class="m">OR <b class="or">4.2%</b></span><span class="m mut">за 21 мин</span><span class="m mut">База подписчиков 04.03.2026</span><span class="m mut">#85201</span></div></div></div>
+        <div class="rail"><i class="dot t-reg"></i>
+          <span class="datemark"><b>06.03</b><span>12:00</span></span></div>
+        <div class="cell c3"></div>
+      </div><div class="row side-r">
+        <div class="cell c1"></div>
+        <div class="rail"><i class="dot t-ab ring"></i>
+          <span class="datemark"><b>04.03</b><span>16:48</span></span></div>
+        <div class="cell c3"><div class="entry part t-ab"><div class="e-top"><span class="type t-ab">A/B-тест</span><span class="kind t-ab">Рассылка победителя</span><span class="stepn">шаг 2 из 2</span></div><div class="e-name">Победитель — остальной базе: «🐾 Этот плед мурчит от уюта»</div><div class="chain"><i class="ch-dot t-ab"></i><b>↖ продолжение</b> · «8 марта: −30% на весь декор, промокод VESNA» <span class="mut">#84640</span> · 04.03 в 15:20</div><div class="e-meta"><span class="m"><b>3 515</b> писем</span><span class="m">OR <b class="or">9.6%</b></span><span class="m mut">за 9 мин</span><span class="m mut">База подписчиков 04.03.2026</span><span class="m mut">#84640</span><span class="m total">итого по цепочке: <b>11 720</b> писем · OR <b class="or">10.5%</b></span></div></div></div>
+      </div><div class="row side-l">
+        <div class="cell c1"><div class="entry part t-ab"><div class="e-top"><span class="type t-ab">A/B-тест</span><span class="kind t-ab">Тестовая волна A/B</span><span class="stepn">шаг 1 из 2</span></div><div class="e-name">Тестовая волна: 2 варианта темы</div><div class="chain"><i class="ch-dot t-ab"></i><b>начало цепочки, продолжение ↘</b> · «8 марта: −30% на весь декор, промокод VESNA» <span class="mut">#84640</span> · 04.03 в 16:48</div><div class="vars"><div class="vrow"><span class="vn">«🌸 Перед 8 марта: подарки для дома»</span><span class="vm">4 103 · OR 10.8%</span></div><div class="vrow"><span class="vn">«🐾 Этот плед мурчит от уюта» <span class="win">★ победитель</span></span><span class="vm">4 102 · OR 10.8%</span></div></div><div class="e-meta"><span class="m"><b>8 205</b> писем</span><span class="m">OR <b class="or">10.8%</b></span><span class="m mut">за 14 мин</span><span class="m mut">База подписчиков 04.03.2026</span><span class="m mut">#84640</span></div></div></div>
+        <div class="rail"><i class="dot t-ab ring"></i>
+          <span class="datemark"><b>04.03</b><span>15:20</span></span></div>
+        <div class="cell c3"></div>
+      </div><div class="row mrow"><div class="cell c1"></div><div class="rail"><span class="mlabel">февраль 2026</span></div><div class="cell c3"></div></div><div class="row"><div class="cell c1"></div><div class="rail dashed"><span class="gaplabel">пауза<br>19 дней</span></div><div class="cell c3"></div></div><div class="row side-l">
+        <div class="cell c1"><div class="entry"><div class="e-top"><span class="type t-reg">Обычная</span><span class="status s-ok">завершена</span></div><div class="e-name">Досыл по неоткрывшим: «💌 Всё ещё −30 на текстиль»</div><div class="e-meta"><span class="m"><b>10 331</b> писем</span><span class="m">OR <b class="or">5.0%</b></span><span class="m mut">за 11 мин</span><span class="m mut">Не открывали + новые | 13.02.2026</span><span class="m mut">#80867</span></div></div></div>
+        <div class="rail"><i class="dot t-reg"></i>
+          <span class="datemark"><b>13.02</b><span>13:16</span></span></div>
+        <div class="cell c3"></div>
+      </div><div class="row side-r">
+        <div class="cell c1"></div>
+        <div class="rail"><i class="dot t-ab ring"></i>
+          <span class="datemark"><b>12.02</b><span>09:30</span></span></div>
+        <div class="cell c3"><div class="entry part t-ab"><div class="e-top"><span class="type t-ab">A/B-тест</span><span class="kind t-ab">Рассылка победителя</span><span class="stepn">шаг 2 из 2</span></div><div class="e-name">Победитель — остальной базе: «💙 −30 на пледы и мы сейчас не про температуру»</div><div class="chain"><i class="ch-dot t-ab"></i><b>↖ продолжение</b> · «14 февраля: −30% на подарки, промокод LOVE2026» <span class="mut">#80510</span> · 11.02 в 16:01</div><div class="e-meta"><span class="m"><b>4 551</b> писем</span><span class="m">OR <b class="or">11.2%</b></span><span class="m mut">за 22 мин</span><span class="m mut">База подписчиков 11.02.2026</span><span class="m mut">#80510</span><span class="m total">итого по цепочке: <b>11 375</b> писем · OR <b class="or">10.9%</b></span></div></div></div>
+      </div><div class="row side-l">
+        <div class="cell c1"><div class="entry part t-ab"><div class="e-top"><span class="type t-ab">A/B-тест</span><span class="kind t-ab">Тестовая волна A/B</span><span class="stepn">шаг 1 из 2</span></div><div class="e-name">Тестовая волна: 2 варианта темы</div><div class="chain"><i class="ch-dot t-ab"></i><b>начало цепочки, продолжение ↘</b> · «14 февраля: −30% на подарки, промокод LOVE2026» <span class="mut">#80510</span> · 12.02 в 09:30</div><div class="vars"><div class="vrow"><span class="vn">«💙 −30 на пледы и мы сейчас не про температуру» <span class="win">★ победитель</span></span><span class="vm">3 411 · OR 10.8%</span></div><div class="vrow"><span class="vn">«🎁 Подарок к 14 февраля: −30% на всё»</span><span class="vm">3 413 · OR 10.6%</span></div></div><div class="e-meta"><span class="m"><b>6 824</b> писем</span><span class="m">OR <b class="or">10.7%</b></span><span class="m mut">за 15 мин</span><span class="m mut">База подписчиков 11.02.2026</span><span class="m mut">#80510</span></div></div></div>
+        <div class="rail"><i class="dot t-ab ring"></i>
+          <span class="datemark"><b>11.02</b><span>16:01</span></span></div>
+        <div class="cell c3"></div>
+      </div><div class="row mrow"><div class="cell c1"></div><div class="rail"><span class="mlabel">январь 2026</span></div><div class="cell c3"></div></div><div class="row"><div class="cell c1"></div><div class="rail dashed"><span class="gaplabel">пауза<br>12 дней</span></div><div class="cell c3"></div></div><div class="row side-l">
+        <div class="cell c1"><div class="entry"><div class="e-top"><span class="type t-reg">Обычная</span><span class="status s-ok">завершена</span></div><div class="e-name">Итоговая часть: Январский дайджест v2</div><div class="e-meta"><span class="m"><b>3 796</b> писем</span><span class="m">OR <b class="or">13.2%</b></span><span class="m mut">за 13 мин</span><span class="m mut">part_3 — база 29.01.2026</span><span class="m mut">#78576</span></div></div></div>
+        <div class="rail"><i class="dot t-reg"></i>
+          <span class="datemark"><b>30.01</b><span>09:10</span></span></div>
+        <div class="cell c3"></div>
+      </div><div class="row side-l">
+        <div class="cell c1"><div class="entry"><div class="e-top"><span class="type t-reg">Обычная</span><span class="status s-ok">завершена</span></div><div class="e-name">Часть Б: Январский дайджест v2</div><div class="e-meta"><span class="m"><b>3 719</b> писем</span><span class="m">OR <b class="or">13.3%</b></span><span class="m mut">за 16 мин</span><span class="m mut">part_2 — база 29.01.2026</span><span class="m mut">#78456</span></div></div></div>
+        <div class="rail"><i class="dot t-reg"></i>
+          <span class="datemark"><b>29.01</b><span>14:04</span></span></div>
+        <div class="cell c3"></div>
+      </div><div class="row side-l">
+        <div class="cell c1"><div class="entry"><div class="e-top"><span class="type t-reg">Обычная</span><span class="status s-ok">завершена</span></div><div class="e-name">Часть А: Январский дайджест v1</div><div class="e-meta"><span class="m"><b>3 718</b> писем</span><span class="m">OR <b class="or">13.3%</b></span><span class="m mut">за 7 мин</span><span class="m mut">part_1 — база 29.01.2026</span><span class="m mut">#78454</span></div></div></div>
+        <div class="rail"><i class="dot t-reg"></i>
+          <span class="datemark"><b>29.01</b><span>14:04</span></span></div>
+        <div class="cell c3"></div>
+      </div><div class="row side-l">
+        <div class="cell c1"><div class="entry"><div class="e-top"><span class="type t-reg">Обычная</span><span class="status s-ok">завершена</span></div><div class="e-name">Тестовая отправка v2</div><div class="e-meta"><span class="m"><b>8</b> писем</span><span class="m">OR <b class="or">100.0%</b></span><span class="m mut">за меньше минуты</span><span class="m mut">Технический список</span><span class="m mut">#78445</span></div></div></div>
+        <div class="rail"><i class="dot t-reg"></i>
+          <span class="datemark"><b>29.01</b><span>13:45</span></span></div>
+        <div class="cell c3"></div>
+      </div><div class="row side-l">
+        <div class="cell c1"><div class="entry"><div class="e-top"><span class="type t-reg">Обычная</span><span class="status s-ok">завершена</span></div><div class="e-name">Тестовая отправка v1</div><div class="e-meta"><span class="m"><b>8</b> писем</span><span class="m">OR <b class="or">75.0%</b></span><span class="m mut">за меньше минуты</span><span class="m mut">Технический список</span><span class="m mut">#78444</span></div></div></div>
+        <div class="rail"><i class="dot t-reg"></i>
+          <span class="datemark"><b>29.01</b><span>13:45</span></span></div>
+        <div class="cell c3"></div>
+      </div><div class="row"><div class="cell c1"></div><div class="rail dashed"><span class="gaplabel">пауза<br>24 дня</span></div><div class="cell c3"></div></div><div class="row side-l">
+        <div class="cell c1"><div class="entry"><div class="e-top"><span class="type t-ch">Поэтапная</span><span class="status s-ok">завершена</span></div><div class="e-name">Всей базе: «🎄 С Новым годом! Спасибо, что вы с нами»</div><div class="parts">отправка частями</div><div class="e-meta"><span class="m"><b>10 764</b> писем</span><span class="m">OR <b class="or">12.2%</b></span><span class="m mut">за 11 мин</span><span class="m mut">База подписчиков 30.12.2025</span><span class="m mut">#74174</span></div></div></div>
+        <div class="rail"><i class="dot t-ch"></i>
+          <span class="datemark"><b>05.01</b><span>11:00</span></span></div>
+        <div class="cell c3"></div>
+      </div><div class="row mrow"><div class="cell c1"></div><div class="rail"><span class="mlabel">декабрь 2025</span></div><div class="cell c3"></div></div><div class="row"><div class="cell c1"></div><div class="rail dashed"><span class="gaplabel">пауза<br>10 дней</span></div><div class="cell c3"></div></div><div class="row side-r">
+        <div class="cell c1"></div>
+        <div class="rail"><i class="dot t-ab ring"></i>
+          <span class="datemark"><b>26.12</b><span>09:04</span></span></div>
+        <div class="cell c3"><div class="entry part t-ab"><div class="e-top"><span class="type t-ab">A/B-тест</span><span class="kind t-ab">Рассылка победителя</span><span class="stepn">шаг 2 из 2</span></div><div class="e-name">Победитель — остальной базе: «💌 Встречай зиму по-скандинавски»</div><div class="chain"><i class="ch-dot t-ab"></i><b>↖ продолжение</b> · «Новогодний дайджест магазина» <span class="mut">#73172</span> · 25.12 в 14:28</div><div class="e-meta"><span class="m"><b>4 304</b> писем</span><span class="m">OR <b class="or">12.0%</b></span><span class="m mut">за 32 мин</span><span class="m mut">База подписчиков 25.12.2025</span><span class="m mut">#73172</span><span class="m total">итого по цепочке: <b>10 759</b> писем · OR <b class="or">12.6%</b></span></div></div></div>
+      </div><div class="row side-l">
+        <div class="cell c1"><div class="entry part t-ab"><div class="e-top"><span class="type t-ab">A/B-тест</span><span class="kind t-ab">Тестовая волна A/B</span><span class="stepn">шаг 1 из 2</span></div><div class="e-name">Тестовая волна: 2 варианта темы</div><div class="chain"><i class="ch-dot t-ab"></i><b>начало цепочки, продолжение ↘</b> · «Новогодний дайджест магазина» <span class="mut">#73172</span> · 26.12 в 09:04</div><div class="vars"><div class="vrow"><span class="vn">«Новинки к Новому году»</span><span class="vm">3 227 · OR 13.4%</span></div><div class="vrow"><span class="vn">«💌 Встречай зиму по-скандинавски» <span class="win">★ победитель</span></span><span class="vm">3 228 · OR 12.8%</span></div></div><div class="e-meta"><span class="m"><b>6 455</b> писем</span><span class="m">OR <b class="or">13.1%</b></span><span class="m mut">за 13 мин</span><span class="m mut">База подписчиков 25.12.2025</span><span class="m mut">#73172</span></div></div></div>
+        <div class="rail"><i class="dot t-ab ring"></i>
+          <span class="datemark"><b>25.12</b><span>14:28</span></span></div>
+        <div class="cell c3"></div>
+      </div><div class="row mrow"><div class="cell c1"></div><div class="rail"><span class="mlabel">ноябрь 2025</span></div><div class="cell c3"></div></div><div class="row"><div class="cell c1"></div><div class="rail dashed"><span class="gaplabel">пауза<br>30 дней</span></div><div class="cell c3"></div></div><div class="row side-l">
+        <div class="cell c1"><div class="entry"><div class="e-top"><span class="type t-reg">Обычная</span><span class="status s-ok">завершена</span></div><div class="e-name">Чёрная Пятница в нашем магазине</div><div class="e-meta"><span class="m"><b>10 197</b> писем</span><span class="m">OR <b class="or">11.3%</b></span><span class="m mut">за 13 мин</span><span class="m mut">База подписчиков 25.11.2025</span><span class="m mut">#67626</span></div></div></div>
+        <div class="rail"><i class="dot t-reg"></i>
+          <span class="datemark"><b>25.11</b><span>12:30</span></span></div>
+        <div class="cell c3"></div>
+      </div><div class="row"><div class="cell c1"></div><div class="rail dashed"><span class="gaplabel">пауза<br>12 дней</span></div><div class="cell c3"></div></div><div class="row side-l">
+        <div class="cell c1"><div class="entry"><div class="e-top"><span class="type t-reg">Обычная</span><span class="status s-ok">завершена</span></div><div class="e-name">«⏰ −40% на всё исчезнет через 12 часов», промокод SOROKA</div><div class="e-meta"><span class="m"><b>10 016</b> писем</span><span class="m">OR <b class="or">11.2%</b></span><span class="m mut">за 15 мин</span><span class="m mut">База подписчиков 13.11.2025</span><span class="m mut">#66047</span></div></div></div>
+        <div class="rail"><i class="dot t-reg"></i>
+          <span class="datemark"><b>13.11</b><span>12:46</span></span></div>
+        <div class="cell c3"></div>
+      </div><div class="row side-l">
+        <div class="cell c1"><div class="entry"><div class="e-top"><span class="type t-reg">Обычная</span><span class="status s-ok">завершена</span></div><div class="e-name">Неоткрывшим: «⏰ Осталось 48 часов: −40% на всё»</div><div class="e-meta"><span class="m"><b>9 093</b> писем</span><span class="m">OR <b class="or">4.7%</b></span><span class="m mut">за 16 мин</span><span class="m mut">База подписчиков 10.11.2025</span><span class="m mut">#65726</span></div></div></div>
+        <div class="rail"><i class="dot t-reg"></i>
+          <span class="datemark"><b>11.11</b><span>16:59</span></span></div>
+        <div class="cell c3"></div>
+      </div><div class="row side-l">
+        <div class="cell c1"><div class="entry"><div class="e-top"><span class="type t-reg">Обычная</span><span class="status s-ok">завершена</span></div><div class="e-name">«😳 −40% на всё перед Чёрной пятницей», промокод SOROKA</div><div class="e-meta"><span class="m"><b>10 037</b> писем</span><span class="m">OR <b class="or">11.5%</b></span><span class="m mut">за 28 мин</span><span class="m mut">База подписчиков 10.11.2025</span><span class="m mut">#65538</span></div></div></div>
+        <div class="rail"><i class="dot t-reg"></i>
+          <span class="datemark"><b>10.11</b><span>16:20</span></span></div>
+        <div class="cell c3"></div>
+      </div>
+  <footer>
+    Показаны <b>37</b> отправок по 27 завершённым кампаниям (из 235 на аккаунте);
+    черновики исключены. Составная кампания даёт несколько строк: тестовая волна A/B и рассылка
+    победителя, основная отправка и автодосыл — это разные события, часто в разные дни.
+    OR каждой строки считается от её собственных доставленных; «итого по цепочке» —
+    по кампании целиком, оно указано на её последнем шаге.
+  </footer>
+</div></div>

@@ -1,0 +1,15 @@
+# Навыки, скопированные из Rusender/rusender-mcp
+# Обновляется через scripts/sync-skills.sh --apply
+commit 6c828ada27b7e9f7b55fa7983a7ac6e10286dbc2
+synced 2026-09-23T12:53:58Z
+
+rusender-ab-provider 1.0.0
+rusender-ab-report 1.0.0
+rusender-account-report 1.15.0
+rusender-campaign-cleanup 1.0.0
+rusender-campaign-create 1.0.0
+rusender-campaign-report 1.0.0
+rusender-campaign-timeline 1.8.0
+rusender-japanese-style 1.0.0
+rusender-key-dashboard 1.0.0
+rusender-send-date-oracle 1.1.0
