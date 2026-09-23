@@ -1,0 +1,1093 @@
+{
+  "_комментарий": "Описание демо-проектов. Из него scripts/make-demo.mjs собирает истории, списки и логи. Цифры вымышленные.",
+  "projects": [
+    {
+      "slug": "shop-rosa",
+      "name": "Роза — доставка цветов",
+      "domain": "rosa.example",
+      "sender": {
+        "id": 41,
+        "email": "news@rosa.example",
+        "from_name": "Роза"
+      },
+      "listPattern": "| Роза",
+      "utm": {
+        "source": "email",
+        "medium": "rusender"
+      },
+      "cap": {
+        "sends": 2,
+        "days": 7
+      },
+      "cadenceDays": 4,
+      "months": 9,
+      "followupShare": 0.2,
+      "audiences": [
+        {
+          "kind": "active",
+          "alias": "активные",
+          "listId": 42761,
+          "listName": "Активные 90д | Роза",
+          "size": 42731,
+          "activeShare": 0.93,
+          "or": [
+            0.27,
+            0.34
+          ],
+          "ctor": [
+            0.07,
+            0.11
+          ],
+          "share": 0.55,
+          "variables": [
+            "name",
+            "city",
+            "last_order_at"
+          ]
+        },
+        {
+          "kind": "reactivation",
+          "alias": "спящие",
+          "listId": 42755,
+          "listName": "Спящие 90–365д | Роза",
+          "size": 18204,
+          "activeShare": 0.86,
+          "or": [
+            0.15,
+            0.21
+          ],
+          "ctor": [
+            0.04,
+            0.07
+          ],
+          "share": 0.25,
+          "variables": [
+            "name"
+          ]
+        },
+        {
+          "kind": "free",
+          "alias": "подписчики без покупок",
+          "listId": 42749,
+          "listName": "Подписчики без покупок | Роза",
+          "size": 9870,
+          "activeShare": 0.81,
+          "or": [
+            0.11,
+            0.17
+          ],
+          "ctor": [
+            0.02,
+            0.05
+          ],
+          "share": 0.2,
+          "variables": [
+            "name"
+          ]
+        }
+      ],
+      "subjects": {
+        "active": [
+          "Собрали три букета недели",
+          "Пионы вернулись",
+          "Что стоит дольше двух недель",
+          "Осень началась с георгинов",
+          "Букет на новоселье",
+          "Гортензии дольше всех"
+        ],
+        "reactivation": [
+          "Давно не виделись",
+          "У нас появилась доставка за два часа",
+          "Что изменилось с вашего последнего заказа"
+        ],
+        "free": [
+          "Как выбрать букет, который простоит неделю",
+          "Пять ошибок при уходе за срезанными цветами",
+          "Что дарят вместо роз"
+        ]
+      },
+      "recentBurst": {
+        "audienceIndex": 0,
+        "sends": 1,
+        "daysAgo": [
+          4
+        ],
+        "subject": "Букет на новоселье"
+      }
+    },
+    {
+      "slug": "saas-taskly",
+      "name": "Taskly — таск-трекер для команд",
+      "domain": "taskly.example",
+      "sender": {
+        "id": 58,
+        "email": "product@taskly.example",
+        "from_name": "Команда Taskly"
+      },
+      "listPattern": "| Taskly",
+      "utm": {
+        "source": "email",
+        "medium": "rusender"
+      },
+      "cap": {
+        "sends": 1,
+        "days": 14
+      },
+      "cadenceDays": 9,
+      "months": 22,
+      "followupShare": 0.1,
+      "audiences": [
+        {
+          "kind": "paid",
+          "alias": "платники",
+          "listId": 51204,
+          "listName": "Платные пространства | Taskly",
+          "size": 3840,
+          "activeShare": 0.96,
+          "or": [
+            0.38,
+            0.47
+          ],
+          "ctor": [
+            0.12,
+            0.19
+          ],
+          "share": 0.3,
+          "lang": "ru",
+          "variables": [
+            "name",
+            "workspace",
+            "plan"
+          ]
+        },
+        {
+          "kind": "free",
+          "alias": "фри активные",
+          "listId": 51208,
+          "listName": "Бесплатный план, активные | Taskly",
+          "size": 21460,
+          "activeShare": 0.9,
+          "or": [
+            0.22,
+            0.29
+          ],
+          "ctor": [
+            0.06,
+            0.1
+          ],
+          "share": 0.3,
+          "lang": "ru",
+          "variables": [
+            "name"
+          ]
+        },
+        {
+          "kind": "inactive",
+          "alias": "фри спящие",
+          "listId": 51211,
+          "listName": "Бесплатный план, 60д без входа | Taskly",
+          "size": 14980,
+          "activeShare": 0.78,
+          "or": [
+            0.08,
+            0.13
+          ],
+          "ctor": [
+            0.02,
+            0.04
+          ],
+          "share": 0.14,
+          "lang": "ru",
+          "variables": [
+            "name"
+          ]
+        },
+        {
+          "kind": "paid",
+          "lang": "en",
+          "alias": "paid EN",
+          "listId": 51230,
+          "listName": "Paid workspaces | Taskly EN",
+          "size": 2610,
+          "activeShare": 0.95,
+          "or": [
+            0.31,
+            0.39
+          ],
+          "ctor": [
+            0.1,
+            0.16
+          ],
+          "share": 0.14,
+          "variables": [
+            "name",
+            "workspace",
+            "plan"
+          ]
+        },
+        {
+          "kind": "free",
+          "lang": "en",
+          "alias": "free EN",
+          "listId": 51234,
+          "listName": "Free plan, active | Taskly EN",
+          "size": 9840,
+          "activeShare": 0.9,
+          "or": [
+            0.18,
+            0.24
+          ],
+          "ctor": [
+            0.05,
+            0.09
+          ],
+          "share": 0.12,
+          "variables": [
+            "name"
+          ]
+        }
+      ],
+      "subjects": {
+        "paid": [
+          "Что изменилось в Taskly за месяц",
+          "Новые роли и права доступа",
+          "Импорт из Jira заработал",
+          "Ломающее изменение в API 12 ноября"
+        ],
+        "free": [
+          "Три проекта — это мало?",
+          "Как команды используют доски",
+          "Обновили шаблоны проектов"
+        ],
+        "inactive": [
+          "Вы не заходили 60 дней — вот что поменялось",
+          "Ваши проекты на месте"
+        ],
+        "paid.en": [
+          "What changed in Taskly this month",
+          "New roles and access rights",
+          "Jira import is live",
+          "Breaking API change on 12 November"
+        ],
+        "free.en": [
+          "Three projects — is that enough?",
+          "How teams use boards",
+          "We refreshed the project templates"
+        ]
+      }
+    },
+    {
+      "slug": "school-lingvo",
+      "name": "Лингво — онлайн-школа английского",
+      "domain": "lingvo.example",
+      "sender": {
+        "id": 73,
+        "email": "hello@lingvo.example",
+        "from_name": "Школа Лингво"
+      },
+      "listPattern": "| Лингво",
+      "utm": {
+        "source": "email",
+        "medium": "rusender"
+      },
+      "cap": {
+        "sends": 3,
+        "days": 7
+      },
+      "cadenceDays": 6,
+      "months": 10,
+      "followupShare": 0.35,
+      "audiences": [
+        {
+          "kind": "active",
+          "alias": "лиды",
+          "listId": 61402,
+          "listName": "Лиды с бесплатного урока | Лингво",
+          "size": 7420,
+          "activeShare": 0.91,
+          "or": [
+            0.24,
+            0.33
+          ],
+          "ctor": [
+            0.08,
+            0.14
+          ],
+          "share": 0.45,
+          "variables": [
+            "name",
+            "level"
+          ]
+        },
+        {
+          "kind": "paid",
+          "alias": "выпускники",
+          "listId": 61407,
+          "listName": "Выпускники потоков | Лингво",
+          "size": 3180,
+          "activeShare": 0.95,
+          "or": [
+            0.33,
+            0.42
+          ],
+          "ctor": [
+            0.1,
+            0.16
+          ],
+          "share": 0.3,
+          "variables": [
+            "name",
+            "level"
+          ]
+        },
+        {
+          "kind": "free",
+          "alias": "подписчики",
+          "listId": 61411,
+          "listName": "Подписчики рассылки | Лингво",
+          "size": 15640,
+          "activeShare": 0.88,
+          "or": [
+            0.16,
+            0.23
+          ],
+          "ctor": [
+            0.03,
+            0.06
+          ],
+          "share": 0.25,
+          "variables": [
+            "name"
+          ]
+        }
+      ],
+      "subjects": {
+        "active": [
+          "Набор на октябрьский поток открыт",
+          "Сколько на самом деле занимает выход на B1",
+          "Осталось четыре места"
+        ],
+        "paid": [
+          "Вы закончили поток — что дальше",
+          "Открыли продолжающий уровень",
+          "Возвращаемся к занятиям"
+        ],
+        "free": [
+          "Почему вы не понимаете речь на слух",
+          "Пять глаголов, которые вы используете неправильно",
+          "Как учить слова, чтобы они оставались"
+        ]
+      }
+    },
+    {
+      "slug": "clinic-vita",
+      "name": "Вита — сеть медицинских центров",
+      "domain": "vita-clinic.example",
+      "sender": {
+        "id": 88,
+        "email": "info@vita-clinic.example",
+        "from_name": "Клиника Вита"
+      },
+      "listPattern": "| Вита",
+      "utm": {
+        "source": "email",
+        "medium": "rusender"
+      },
+      "cap": {
+        "sends": 1,
+        "days": 14
+      },
+      "cadenceDays": 18,
+      "months": 12,
+      "followupShare": 0.05,
+      "audiences": [
+        {
+          "kind": "active",
+          "alias": "пациенты за год",
+          "listId": 70311,
+          "listName": "Пациенты за 12 мес | Вита",
+          "size": 24900,
+          "activeShare": 0.94,
+          "or": [
+            0.29,
+            0.37
+          ],
+          "ctor": [
+            0.05,
+            0.09
+          ],
+          "share": 0.7,
+          "variables": [
+            "name"
+          ]
+        },
+        {
+          "kind": "reactivation",
+          "alias": "давно не были",
+          "listId": 70318,
+          "listName": "Без визитов 18 мес | Вита",
+          "size": 11200,
+          "activeShare": 0.85,
+          "or": [
+            0.17,
+            0.24
+          ],
+          "ctor": [
+            0.03,
+            0.05
+          ],
+          "share": 0.3,
+          "variables": [
+            "name"
+          ]
+        }
+      ],
+      "subjects": {
+        "active": [
+          "Пора обновить результаты анализов",
+          "Открылся центр на Парковой",
+          "Диспансеризация: что входит и сколько занимает"
+        ],
+        "reactivation": [
+          "Ваша карта по-прежнему у нас",
+          "Что изменилось в клинике за полтора года"
+        ]
+      }
+    },
+    {
+      "slug": "fitness-volna",
+      "name": "Волна — сеть фитнес-клубов",
+      "domain": "volna-fit.example",
+      "sender": {
+        "id": 95,
+        "email": "club@volna-fit.example",
+        "from_name": "Волна"
+      },
+      "listPattern": "| Волна",
+      "utm": {
+        "source": "email",
+        "medium": "rusender"
+      },
+      "cap": {
+        "sends": 2,
+        "days": 7
+      },
+      "cadenceDays": 7,
+      "months": 11,
+      "followupShare": 0.25,
+      "audiences": [
+        {
+          "kind": "paid",
+          "alias": "действующие абонементы",
+          "listId": 80121,
+          "listName": "Действующий абонемент | Волна",
+          "size": 8640,
+          "activeShare": 0.95,
+          "or": [
+            0.31,
+            0.39
+          ],
+          "ctor": [
+            0.07,
+            0.12
+          ],
+          "share": 0.45,
+          "variables": [
+            "name",
+            "club"
+          ]
+        },
+        {
+          "kind": "churned",
+          "alias": "истёкшие",
+          "listId": 80127,
+          "listName": "Абонемент истёк 1–6 мес | Волна",
+          "size": 6320,
+          "activeShare": 0.88,
+          "or": [
+            0.19,
+            0.26
+          ],
+          "ctor": [
+            0.05,
+            0.09
+          ],
+          "share": 0.35,
+          "variables": [
+            "name"
+          ]
+        },
+        {
+          "kind": "free",
+          "alias": "пробные",
+          "listId": 80133,
+          "listName": "Были на пробном | Волна",
+          "size": 4180,
+          "activeShare": 0.9,
+          "or": [
+            0.22,
+            0.3
+          ],
+          "ctor": [
+            0.06,
+            0.1
+          ],
+          "share": 0.2,
+          "variables": [
+            "name"
+          ]
+        }
+      ],
+      "subjects": {
+        "paid": [
+          "Расписание на октябрь",
+          "Новые групповые в утренние часы",
+          "Бассейн закрыт на профилактику 12–14 числа"
+        ],
+        "churned": [
+          "Ваш абонемент закончился месяц назад",
+          "Вернулись? Первая неделя за наш счёт"
+        ],
+        "free": [
+          "Как прошло первое занятие",
+          "Что входит в абонемент"
+        ]
+      }
+    },
+    {
+      "slug": "media-kontur",
+      "name": "Контур — ежедневный дайджест",
+      "domain": "kontur-media.example",
+      "sender": {
+        "id": 102,
+        "email": "daily@kontur-media.example",
+        "from_name": "Контур"
+      },
+      "listPattern": "| Контур",
+      "utm": {
+        "source": "email",
+        "medium": "rusender"
+      },
+      "cap": {
+        "sends": 7,
+        "days": 7
+      },
+      "cadenceDays": 1,
+      "months": 4,
+      "followupShare": 0,
+      "audiences": [
+        {
+          "kind": "all",
+          "alias": "все подписчики",
+          "listId": 90455,
+          "listName": "Все подписчики | Контур",
+          "size": 58300,
+          "activeShare": 0.92,
+          "or": [
+            0.34,
+            0.44
+          ],
+          "ctor": [
+            0.14,
+            0.22
+          ],
+          "share": 1.0,
+          "variables": [
+            "name"
+          ]
+        }
+      ],
+      "subjects": {
+        "all": [
+          "Главное за вторник",
+          "Главное за среду",
+          "Главное за четверг",
+          "Главное за пятницу",
+          "Итоги недели",
+          "Главное за понедельник"
+        ]
+      }
+    },
+    {
+      "slug": "logist-tochka",
+      "name": "Точка — B2B-логистика",
+      "domain": "tochka-log.example",
+      "sender": {
+        "id": 110,
+        "email": "sales@tochka-log.example",
+        "from_name": "Точка Логистика"
+      },
+      "listPattern": "| Точка",
+      "utm": {
+        "source": "email",
+        "medium": "rusender"
+      },
+      "cap": {
+        "sends": 1,
+        "days": 30
+      },
+      "cadenceDays": 28,
+      "months": 14,
+      "followupShare": 0.15,
+      "audiences": [
+        {
+          "kind": "paid",
+          "alias": "действующие клиенты",
+          "listId": 95012,
+          "listName": "Действующие клиенты | Точка",
+          "size": 1240,
+          "activeShare": 0.97,
+          "or": [
+            0.41,
+            0.52
+          ],
+          "ctor": [
+            0.15,
+            0.24
+          ],
+          "share": 0.5,
+          "variables": [
+            "name",
+            "company"
+          ]
+        },
+        {
+          "kind": "active",
+          "alias": "лиды",
+          "listId": 95018,
+          "listName": "Лиды с сайта и выставок | Точка",
+          "size": 3860,
+          "activeShare": 0.9,
+          "or": [
+            0.21,
+            0.29
+          ],
+          "ctor": [
+            0.06,
+            0.11
+          ],
+          "share": 0.5,
+          "variables": [
+            "name",
+            "company"
+          ]
+        }
+      ],
+      "subjects": {
+        "paid": [
+          "Изменения в тарифах с 1 ноября",
+          "Новое направление: Казахстан",
+          "Отчёт по вашим отгрузкам за квартал"
+        ],
+        "active": [
+          "Сколько стоит доставка сборного груза",
+          "Как считать логистику в себестоимости",
+          "Разбор: как клиент снизил расходы на 18%"
+        ]
+      }
+    },
+    {
+      "slug": "game-pixelfox",
+      "name": "PixelFox — мобильная игра",
+      "domain": "pixelfox.example",
+      "sender": {
+        "id": 118,
+        "email": "game@pixelfox.example",
+        "from_name": "PixelFox"
+      },
+      "listPattern": "| PixelFox",
+      "utm": {
+        "source": "email",
+        "medium": "rusender"
+      },
+      "cap": {
+        "sends": 2,
+        "days": 7
+      },
+      "cadenceDays": 5,
+      "months": 8,
+      "followupShare": 0.3,
+      "audiences": [
+        {
+          "kind": "active",
+          "alias": "играют сейчас",
+          "listId": 96201,
+          "listName": "Заходили за 14д | PixelFox",
+          "size": 34200,
+          "activeShare": 0.91,
+          "or": [
+            0.25,
+            0.33
+          ],
+          "ctor": [
+            0.09,
+            0.15
+          ],
+          "share": 0.5,
+          "variables": [
+            "nickname",
+            "level"
+          ]
+        },
+        {
+          "kind": "churned",
+          "alias": "ушедшие",
+          "listId": 96207,
+          "listName": "Не заходили 30–90д | PixelFox",
+          "size": 61400,
+          "activeShare": 0.82,
+          "or": [
+            0.1,
+            0.16
+          ],
+          "ctor": [
+            0.03,
+            0.06
+          ],
+          "share": 0.35,
+          "variables": [
+            "nickname"
+          ]
+        },
+        {
+          "kind": "paid",
+          "alias": "платящие",
+          "listId": 96212,
+          "listName": "Совершали покупки | PixelFox",
+          "size": 5120,
+          "activeShare": 0.95,
+          "or": [
+            0.35,
+            0.44
+          ],
+          "ctor": [
+            0.13,
+            0.2
+          ],
+          "share": 0.15,
+          "variables": [
+            "nickname",
+            "level"
+          ]
+        }
+      ],
+      "subjects": {
+        "active": [
+          "Новый сезон начался",
+          "Событие выходного дня",
+          "Обновили баланс лисьих навыков"
+        ],
+        "churned": [
+          "Вас ждёт подарок за возвращение",
+          "Пока вас не было: три новых режима"
+        ],
+        "paid": [
+          "Ранний доступ к сезонному пропуску",
+          "Ваш прогресс в новом сезоне"
+        ]
+      }
+    },
+    {
+      "slug": "travel-marshrut",
+      "name": "Маршрут — подбор туров",
+      "domain": "marshrut.example",
+      "sender": {
+        "id": 126,
+        "email": "travel@marshrut.example",
+        "from_name": "Маршрут"
+      },
+      "listPattern": "| Маршрут",
+      "utm": {
+        "source": "email",
+        "medium": "rusender"
+      },
+      "cap": {
+        "sends": 2,
+        "days": 7
+      },
+      "cadenceDays": 5,
+      "months": 12,
+      "followupShare": 0.2,
+      "audiences": [
+        {
+          "kind": "active",
+          "alias": "искали за 60д",
+          "listId": 97301,
+          "listName": "Активный поиск 60д | Маршрут",
+          "size": 28700,
+          "activeShare": 0.92,
+          "or": [
+            0.26,
+            0.35
+          ],
+          "ctor": [
+            0.08,
+            0.14
+          ],
+          "share": 0.5,
+          "variables": [
+            "name",
+            "last_search"
+          ]
+        },
+        {
+          "kind": "paid",
+          "alias": "покупали тур",
+          "listId": 97308,
+          "listName": "Покупали тур | Маршрут",
+          "size": 9140,
+          "activeShare": 0.94,
+          "or": [
+            0.3,
+            0.38
+          ],
+          "ctor": [
+            0.09,
+            0.15
+          ],
+          "share": 0.3,
+          "variables": [
+            "name",
+            "last_search"
+          ]
+        },
+        {
+          "kind": "reactivation",
+          "alias": "спящие",
+          "listId": 97314,
+          "listName": "Без активности 6 мес | Маршрут",
+          "size": 41200,
+          "activeShare": 0.84,
+          "or": [
+            0.13,
+            0.19
+          ],
+          "ctor": [
+            0.03,
+            0.06
+          ],
+          "share": 0.2,
+          "variables": [
+            "name"
+          ]
+        }
+      ],
+      "subjects": {
+        "active": [
+          "Куда лететь в ноябре",
+          "Турция подешевела на 20%",
+          "Семь направлений без визы"
+        ],
+        "paid": [
+          "Как прошла поездка?",
+          "Вам понравился Кипр — посмотрите Крит",
+          "Раннее бронирование на лето"
+        ],
+        "reactivation": [
+          "Давно не путешествовали",
+          "Цены вернулись к прошлогодним"
+        ]
+      }
+    },
+    {
+      "slug": "food-bystro",
+      "name": "Быстро — доставка еды",
+      "domain": "bystro-food.example",
+      "sender": {
+        "id": 134,
+        "email": "order@bystro-food.example",
+        "from_name": "Быстро"
+      },
+      "listPattern": "| Быстро",
+      "utm": {
+        "source": "email",
+        "medium": "rusender"
+      },
+      "cap": {
+        "sends": 3,
+        "days": 7
+      },
+      "cadenceDays": 3,
+      "months": 7,
+      "followupShare": 0.15,
+      "audiences": [
+        {
+          "kind": "active",
+          "alias": "заказывали за 30д",
+          "listId": 98401,
+          "listName": "Заказы за 30д | Быстро",
+          "size": 51600,
+          "activeShare": 0.93,
+          "or": [
+            0.23,
+            0.31
+          ],
+          "ctor": [
+            0.1,
+            0.17
+          ],
+          "share": 0.55,
+          "variables": [
+            "name",
+            "district"
+          ]
+        },
+        {
+          "kind": "churned",
+          "alias": "давно не заказывали",
+          "listId": 98407,
+          "listName": "Без заказов 60–180д | Быстро",
+          "size": 38900,
+          "activeShare": 0.86,
+          "or": [
+            0.12,
+            0.18
+          ],
+          "ctor": [
+            0.04,
+            0.08
+          ],
+          "share": 0.3,
+          "variables": [
+            "name"
+          ]
+        },
+        {
+          "kind": "free",
+          "alias": "регистрация без заказа",
+          "listId": 98412,
+          "listName": "Зарегистрировались без заказа | Быстро",
+          "size": 16400,
+          "activeShare": 0.83,
+          "or": [
+            0.14,
+            0.2
+          ],
+          "ctor": [
+            0.05,
+            0.09
+          ],
+          "share": 0.15,
+          "variables": [
+            "name"
+          ]
+        }
+      ],
+      "subjects": {
+        "active": [
+          "Новое в меню на этой неделе",
+          "Обед за 15 минут",
+          "Вернули сырники по старой цене"
+        ],
+        "churned": [
+          "Мы изменили меню — загляните",
+          "Бесплатная доставка на первый заказ после паузы"
+        ],
+        "free": [
+          "Вы зарегистрировались, но не заказали",
+          "Как работает доставка за 30 минут"
+        ]
+      }
+    },
+    {
+      "slug": "fin-schet",
+      "name": "Счёт — бухгалтерия для ИП",
+      "domain": "schet.example",
+      "sender": {
+        "id": 142,
+        "email": "team@schet.example",
+        "from_name": "Счёт"
+      },
+      "listPattern": "| Счёт",
+      "utm": {
+        "source": "email",
+        "medium": "rusender"
+      },
+      "cap": {
+        "sends": 1,
+        "days": 10
+      },
+      "cadenceDays": 11,
+      "months": 13,
+      "followupShare": 0.1,
+      "audiences": [
+        {
+          "kind": "paid",
+          "alias": "платные подписки",
+          "listId": 99501,
+          "listName": "Активная подписка | Счёт",
+          "size": 12800,
+          "activeShare": 0.96,
+          "or": [
+            0.44,
+            0.55
+          ],
+          "ctor": [
+            0.16,
+            0.25
+          ],
+          "share": 0.55,
+          "variables": [
+            "name",
+            "inn_last4"
+          ]
+        },
+        {
+          "kind": "churned",
+          "alias": "не продлили",
+          "listId": 99507,
+          "listName": "Не продлили подписку | Счёт",
+          "size": 4360,
+          "activeShare": 0.89,
+          "or": [
+            0.24,
+            0.32
+          ],
+          "ctor": [
+            0.07,
+            0.12
+          ],
+          "share": 0.25,
+          "variables": [
+            "name"
+          ]
+        },
+        {
+          "kind": "free",
+          "alias": "пробный период",
+          "listId": 99512,
+          "listName": "Пробный период | Счёт",
+          "size": 6900,
+          "activeShare": 0.92,
+          "or": [
+            0.3,
+            0.38
+          ],
+          "ctor": [
+            0.1,
+            0.16
+          ],
+          "share": 0.2,
+          "variables": [
+            "name"
+          ]
+        }
+      ],
+      "subjects": {
+        "paid": [
+          "Декларация за третий квартал: сроки",
+          "Изменения в лимитах УСН с января",
+          "Напоминаем про взносы до 31 декабря"
+        ],
+        "churned": [
+          "Ваша подписка закончилась — отчётность не ждёт",
+          "Что вы пропустили в законах за полгода"
+        ],
+        "free": [
+          "Пробный период заканчивается через три дня",
+          "Как подать первую декларацию через Счёт"
+        ]
+      }
+    }
+  ]
+}
