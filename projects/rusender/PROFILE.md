@@ -7,9 +7,9 @@ language: ru
 esp: rusender
 sender:
   id: 17015
-  email: team@rusender.ru
+  email: team@rusender.example
   from_name: "RuSender"
-domain: rusender.ru
+domain: rusender.example
 folder_id: null
 list_pattern: "RuSender"
 default_templates: []

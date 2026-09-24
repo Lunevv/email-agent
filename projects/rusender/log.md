@@ -1,7 +1,7 @@
 # Лог действий по проекту RuSender
 
 ## 2026-09-23
-- 16:05 bootstrap — профиль заведён из аккаунта: отправитель 17015 `RuSender <team@rusender.ru>`, домен rusender.ru
+- 16:05 bootstrap — профиль заведён из аккаунта: отправитель 17015 `RuSender <team@rusender.example>`, домен rusender.example
 - 16:05 bootstrap — `lists.md`: 81 список в аккаунте, в файл вынесено 14 рабочих, тестовых и опасных
 - 16:06 bootstrap — `history.jsonl`: 100 завершённых кампаний, период 15.11.2024 – 10.09.2026
 - 16:10 разметка ролей отправок: primary 44, followup 12, push 1, test 43
