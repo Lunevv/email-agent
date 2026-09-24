@@ -22,7 +22,7 @@
 Если планировщик Claude Code недоступен, подойдёт обычный cron. Пример для будних дней в 10:00:
 
 ```
-0 10 * * 1-5 cd /путь/к/rusender-agent && claude -p "$(cat routines/daily-refresh.md)" >> logs/refresh.log 2>&1
+0 10 * * 1-5 cd /путь/к/email-agent && claude -p "$(cat routines/daily-refresh.md)" >> logs/refresh.log 2>&1
 ```
 
 Папку `logs/` создайте сами, она в `.gitignore`.
