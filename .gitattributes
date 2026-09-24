@@ -1,0 +1,21 @@
+# Подсказки для определения языков репозитория.
+# По сути это набор инструкций на Markdown, а не веб-проект: без этих пометок
+# GitHub считает его на 84% состоящим из HTML из-за шаблонов писем и дашбордов.
+
+# Навыки, скопированные из Rusender/rusender-mcp — чужой код, не наш
+skills/rusender-ab-provider/**        linguist-vendored
+skills/rusender-ab-report/**          linguist-vendored
+skills/rusender-account-report/**     linguist-vendored
+skills/rusender-campaign-cleanup/**   linguist-vendored
+skills/rusender-campaign-create/**    linguist-vendored
+skills/rusender-campaign-report/**    linguist-vendored
+skills/rusender-campaign-timeline/**  linguist-vendored
+skills/rusender-japanese-style/**     linguist-vendored
+skills/rusender-key-dashboard/**      linguist-vendored
+skills/rusender-send-date-oracle/**   linguist-vendored
+
+# Демо-данные: собираются скриптами из scripts/, писать их руками не надо
+projects/**                           linguist-generated
+
+# Шаблон дашборда — данные для него подставляет агент
+skills/rusender-agent/assets/*.html   linguist-generated
